@@ -17,7 +17,12 @@ import (
 )
 
 func main() {
-	err := godotenv.Load()
+	dotenvPath := os.Getenv("DOTENV_PATH")
+	if dotenvPath == "" {
+		dotenvPath = "./env"
+	}
+
+	err := godotenv.Load(dotenvPath)
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}

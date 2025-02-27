@@ -3,3 +3,12 @@ test-all:
 
 test-all-cover:
   go test -v ./... -cover
+
+setup:
+  go install github.com/fatih/gomodifytags@latest
+
+# auto generates json camelCase struct tags for all models
+add-json-tags:
+  for file in `ls ./models`; do \
+    gomodifytags -add-tags json -transform camelcase -all -w -file models/$file; \
+  done

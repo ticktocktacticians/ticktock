@@ -1,12 +1,12 @@
-export interface NavItem {
+interface NavItem {
     title: string;
-    url: string;
+    path: string;
     icon?: React.ComponentType;
 }
 
 export const navItems: NavItem[] = [
     {
         title: "Home",
-        url: "/",
+        path: "/",
     },
 ];

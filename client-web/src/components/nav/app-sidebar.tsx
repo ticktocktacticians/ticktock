@@ -17,7 +17,7 @@ import {
 } from "../ui/sidebar";
 import LogoutButton from "../auth/logout-button";
 import { useGetAuthUser } from "@/lib/queries/authUser";
-import { navItems } from "@/lib/nav";
+import { navItems } from "./nav-items";
 
 export default function AppSidebar() {
     const user = useGetAuthUser().data;
@@ -43,7 +43,7 @@ export default function AppSidebar() {
                             {navItems.map((item) => (
                                 <SidebarMenuItem key={item.title}>
                                     <SidebarMenuButton asChild>
-                                        <a href={item.url}>
+                                        <a href={item.path}>
                                             {item.icon && <item.icon />}
                                             <span>{item.title}</span>
                                         </a>

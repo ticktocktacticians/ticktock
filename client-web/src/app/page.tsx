@@ -1,12 +1,29 @@
-import { getServerClient } from "@/utils/supabase/server";
-import LoggedInPage from "./logged-in-page";
-import { redirect } from "next/navigation";
+"use client";
 
-export default async function Home() {
-    const supabase = await getServerClient();
-    const { data, error } = await supabase.auth.getUser();
+import CreateUserForm from "@/components/auth/create-user-form";
+import { createUser } from "./actions";
+import { User as AuthUser } from "@supabase/supabase-js";
+import { invalidateUser, useGetUser } from "../lib/queries/user";
 
-    if (error || !data?.user) redirect("/login");
+export interface LoggedInPage {
+  authUser: AuthUser;
+}
 
-    return <LoggedInPage />;
+export default function Home() {
+  const { data: user } = useGetUser();
+
+  return (
+    <div>
+      {user ? (
+        <div>Welcome, {user.alias}</div>
+      ) : (
+        <CreateUserForm
+          createUser={async (formData) => {
+            await createUser(formData);
+            await invalidateUser();
+          }}
+        />
+      )}
+    </div>
+  );
 }

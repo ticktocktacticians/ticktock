@@ -1,6 +1,6 @@
 "use client";
 
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import TimetableRow from "./timetable-row";
 import { TimeslotData, TimetableContext } from "./timetable-context";
 
@@ -21,10 +21,8 @@ export default function TimeslotsSelector({ days }: TimeslotsSelectorProps) {
     setHoveredTimeslot,
   } = useContext(TimetableContext);
 
-  const isTimeslotSelected = (timeslot: TimeslotData | null) => {
-    return !!(timeslot && selected[timeslot.dayIndex]?.has(timeslot.timeIndex));
-  };
-
+  const isTimeslotSelected = (timeslot: TimeslotData | null) =>
+    !!(timeslot && selected[timeslot.dayIndex]?.has(timeslot.timeIndex));
   const addCurrentSelection = () => {
     if (!hoveredTimeslot || !startTimeslot || isSelecting === null) return;
 
@@ -62,8 +60,8 @@ export default function TimeslotsSelector({ days }: TimeslotsSelectorProps) {
         addCurrentSelection();
         setIsSelecting(null);
         setStartTimeslot(null);
+        setHoveredTimeslot(null);
       }}
-      onMouseLeave={() => setHoveredTimeslot(null)}
     >
       {days.map((_, dayIndex) => (
         <TimetableRow key={`time-table-row-${dayIndex}`} dayIndex={dayIndex} />

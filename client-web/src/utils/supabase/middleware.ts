@@ -15,7 +15,7 @@ export async function updateSession(request: NextRequest) {
           return request.cookies.getAll();
         },
         setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value, options }) =>
+          cookiesToSet.forEach(({ name, value }) =>
             request.cookies.set(name, value),
           );
           supabaseResponse = NextResponse.next({
@@ -37,14 +37,15 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
+  // these are the only paths non-authed users are allowed to access
+  const noAuthPaths = ["auth", "login", "sandbox"];
   if (
     !user &&
-    !request.nextUrl.pathname.startsWith("/") && // TODO: change to /login
-    !request.nextUrl.pathname.startsWith("/auth")
+    !request.nextUrl.pathname.match(`^\/(${noAuthPaths.join('|')})`)
   ) {
-    // no user, potentially respond by redirecting the user to the login page
+    // no user, respond by redirecting the user to the login page
     const url = request.nextUrl.clone();
-    url.pathname = "/"; // TODO: change to /login
+    url.pathname = "/login";
     return NextResponse.redirect(url);
   }
 

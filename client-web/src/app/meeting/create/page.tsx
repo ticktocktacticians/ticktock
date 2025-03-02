@@ -11,12 +11,18 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import AttendeesInput from "@/components/meeting/attendees-input";
+import Required from "@/components/common/required";
+import Timetable from "../../../components/timetable/timetable";
 
 /** @TODO bind additional timeslot args to createMeeting */
 
 const MEETING_DURATION_OPTS = [60, 120, 180, 240];
 
-export const Required = () => <span className="text-red-800">*</span>;
+const TEST_DATERANGE = {
+  start: new Date(2025, 1, 1),
+  end: new Date(2025, 1, 7),
+};
 
 export default async function CreateMeetingPage() {
   return (
@@ -70,6 +76,12 @@ export default async function CreateMeetingPage() {
             <Label htmlFor="format-2">In-Person</Label>
           </div>
         </RadioGroup>
+
+        <h2>Who else should be in this meeting?</h2>
+
+        <AttendeesInput />
+
+        <Timetable dateRange={TEST_DATERANGE} />
       </form>
     </div>
   );

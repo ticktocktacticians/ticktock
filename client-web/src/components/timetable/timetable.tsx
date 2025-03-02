@@ -1,4 +1,4 @@
-import { type Dayjs } from "dayjs";
+import dayjs from "dayjs";
 import Axis from "./axis";
 import DaysColumn from "./days-column";
 import { TimetableProvider } from "./timetable-context";
@@ -15,8 +15,8 @@ interface TimeTableProps {
 }
 
 export interface DateRange {
-  start: Dayjs;
-  end: Dayjs;
+  start: Date;
+  end: Date;
 }
 
 export default function Timetable({ dateRange }: TimeTableProps) {
@@ -24,9 +24,12 @@ export default function Timetable({ dateRange }: TimeTableProps) {
     return <div>Invalid dateRange</div>;
   }
 
-  const numDays = dateRange.end.diff(dateRange.start, "day");
+  const startDate = dayjs(dateRange.start);
+  const endDate = dayjs(dateRange.end);
 
-  let currentDay = dateRange.start;
+  const numDays = endDate.diff(startDate, "day");
+
+  let currentDay = startDate;
   let days: string[] = [currentDay.format(DATE_FORMAT)];
   for (let i = 0; i < numDays; i++) {
     currentDay = currentDay.add(1, "day");

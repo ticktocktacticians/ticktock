@@ -45,8 +45,59 @@ func main() {
 		log.Fatal("Error connecting to DB")
 	}
 
+	// Check if the 'format' type already exists
+	var formatExists bool
+	err = db.Raw("SELECT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'format')").Scan(&formatExists).Error
+	if err != nil {
+		log.Fatal("failed to check if type exists: " + err.Error())
+	}
+
+	// Create the custom enum type only if it doesn't exist
+	if !formatExists {
+		result := db.Exec("CREATE TYPE format AS ENUM ('VIRTUAL', 'PHYSICAL')")
+		if result.Error != nil {
+			log.Fatal("failed to create enum type: " + result.Error.Error())
+		}
+	} else {
+		fmt.Println("'format' enum type already exists, skipping creation")
+	}
+
+	// Check if the 'format' type already exists
+	var eventStatusExists bool
+	err = db.Raw("SELECT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'event_status')").Scan(&eventStatusExists).Error
+	if err != nil {
+		log.Fatal("failed to check if type exists: " + err.Error())
+	}
+
+	// Create the custom enum type only if it doesn't exist
+	if !eventStatusExists {
+		result := db.Exec("CREATE TYPE event_status AS ENUM ('PENDING_INPUT', 'SCHEDULED', 'COMPLETED', 'CANCELLED')")
+		if result.Error != nil {
+			log.Fatal("failed to create enum type: " + result.Error.Error())
+		}
+	} else {
+		fmt.Println("'event_status' enum type already exists, skipping creation")
+	}
+
+	// Check if the 'format' type already exists
+	var notificationStatusExists bool
+	err = db.Raw("SELECT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'notification_status')").Scan(&notificationStatusExists).Error
+	if err != nil {
+		log.Fatal("failed to check if type exists: " + err.Error())
+	}
+
+	// Create the custom enum type only if it doesn't exist
+	if !notificationStatusExists {
+		result := db.Exec("CREATE TYPE notification_status AS ENUM ('SUCCESS', 'FAIL')")
+		if result.Error != nil {
+			log.Fatal("failed to create enum type: " + result.Error.Error())
+		}
+	} else {
+		fmt.Println("'notification_status' enum type already exists, skipping creation")
+	}
+
 	// Migrate the schema
-	db.AutoMigrate(&models.User{})
+	db.AutoMigrate(&models.User{}, &models.Availability{}, &models.Timeslot{}, &models.Event{}, &models.Notification{}, &models.Booking{})
 
 	// init server env
 	env := &handlersUtils.Env{DB: db, Auth: auth}

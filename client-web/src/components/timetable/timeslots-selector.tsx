@@ -32,15 +32,18 @@ export default function TimeslotsSelector({ days }: TimeslotsSelectorProps) {
     const minDay = Math.min(currentDay, startDay);
     const maxDay = Math.max(currentDay, startDay);
 
+    const minTime = Math.min(currentTime, startTime);
+    const maxTime = Math.max(currentTime, startTime);
+
     if (isSelecting) {
       for (let i = minDay; i <= maxDay; i++) {
-        for (let k = startTime; k <= currentTime; k++) {
+        for (let k = minTime; k <= maxTime; k++) {
           selected[i] ? selected[i]?.add(k) : (selected[i] = new Set([k]));
         }
       }
     } else {
       for (let i = minDay; i <= maxDay; i++) {
-        for (let k = startTime; k <= currentTime; k++) {
+        for (let k = minTime; k <= maxTime; k++) {
           selected[i] && selected[i]?.delete(k);
         }
       }

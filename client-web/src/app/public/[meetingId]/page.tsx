@@ -1,7 +1,8 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
 const meetingData = {
 	title: "Discussion for Next Quarter",
@@ -16,11 +17,12 @@ const meetingData = {
 
 const Scheduler = ({ goBack }) => {
 	const [selectedSlots, setSelectedSlots] = useState<string[]>([]);
+	const [submitted, setSubmitted] = useState(false);
 
 	const schedule = {
 		"Mon, 3 Mar 25": ["09:30AM", "10:00AM", "10:30AM", "11:00AM", "01:30PM"],
 		"Tue, 4 Mar 25": ["09:30AM", "10:00AM", "10:30AM", "11:00AM"],
-    "Wed, 5 Mar 25": ["09:30AM", "10:00AM", "10:30AM", "11:00AM"],
+		"Wed, 5 Mar 25": ["09:30AM", "10:00AM", "10:30AM", "11:00AM"],
 	};
 
 	const toggleSlot = (date, time) => {
@@ -29,6 +31,22 @@ const Scheduler = ({ goBack }) => {
 			prev.includes(slot) ? prev.filter((s) => s !== slot) : [...prev, slot]
 		);
 	};
+
+	if (submitted) {
+		return (
+			<div className="p-4 max-w-md mx-auto font-sans text-center">
+				<h1 className="text-2xl font-bold mb-4 text-gray-900">Scheduler</h1>
+				<p className="text-gray-700 mb-4">
+					Thank you for providing your availabilities. The meeting host will
+					soon send the finalized meeting details to you.
+				</p>
+				<p className="text-gray-700">
+					If you would like to make any changes to your inputs, please kindly
+					contact the meeting host.
+				</p>
+			</div>
+		);
+	}
 
 	return (
 		<div className="p-4 max-w-md mx-auto font-sans">
@@ -51,7 +69,7 @@ const Scheduler = ({ goBack }) => {
 										key={time}
 										onClick={() => toggleSlot(date, time)}
 										className={`px-4 py-2 rounded-md border text-center w-full ${
-											isSelected ? "bg-blue-500 text-white" : "bg-gray-200"
+											isSelected ? "bg-indigo-500 text-white" : "bg-gray-200"
 										}`}
 									>
 										{time}
@@ -73,19 +91,31 @@ const Scheduler = ({ goBack }) => {
 				</ul>
 			</div>
 			<div className="flex justify-between mt-4">
-				<Button onClick={goBack} className="bg-gray-500 text-white">
+				<Button onClick={goBack} className="bg-indigo-500 text-white">
 					Back
+				</Button>
+				{/** change to submit onclick */}
+				<Button
+					onClick={() => setSubmitted(true)}
+					className="bg-indigo-500 text-white"
+				>
+					Submit
 				</Button>
 			</div>
 		</div>
 	);
 };
 
-const MultiStepScheduler = () => {
+export default function MultiStepScheduler() {
 	const [showScheduler, setShowScheduler] = useState(false);
+	const params = useParams();
+
+	useEffect(() => {
+		console.log(params.meetingId);
+	}, [params]);
 
 	return (
-		<div className="max-w-lg mx-auto mt-10 p-8 border border-gray-200 space-y-6 font-sans">
+		<div className="max-w-lg mx-auto mt-10 space-y-6 font-sans">
 			{showScheduler ? (
 				<Scheduler goBack={() => setShowScheduler(false)} />
 			) : (
@@ -145,8 +175,4 @@ const MultiStepScheduler = () => {
 			)}
 		</div>
 	);
-};
-
-export default function Sandbox() {
-	return MultiStepScheduler();
 }

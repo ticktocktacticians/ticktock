@@ -77,22 +77,19 @@ function convertTimeslotsToSchedule(timeslots: Timeslot[]): Schedule {
 	return schedule;
 }
 
-const Scheduler = ({ goBack, event }: { goBack: () => void; event: Event }) => {
-	const [selectedSlots, setSelectedSlots] = useState<number[]>([]);
+const Review = ({
+	goBack,
+	event,
+	schedule,
+	selectedSlots,
+}: {
+	goBack: () => void;
+	event: Event;
+	schedule: Schedule;
+	selectedSlots: number[];
+}) => {
 	const [submitted, setSubmitted] = useState(false);
 	const [error, setError] = useState(false);
-
-	const schedule = convertTimeslotsToSchedule(event.timeslots);
-
-	const toggleSlot = (id: number) => {
-		setSelectedSlots((prevSelectedSlots) => {
-			if (prevSelectedSlots.includes(id)) {
-				return prevSelectedSlots.filter((slotId) => slotId !== id);
-			} else {
-				return [...prevSelectedSlots, id];
-			}
-		});
-	};
 
 	const handleSubmit = async () => {
 		// call the createAvailability function
@@ -114,6 +111,23 @@ const Scheduler = ({ goBack, event }: { goBack: () => void; event: Event }) => {
 			console.error("Failed to submit availability:", error);
 		}
 	};
+
+	// Filter schedules based on selected timeslot IDs
+	const filteredSchedule = Object.entries(schedule).reduce(
+		(acc, [date, { title, timeslot }]) => {
+			const filteredTimeslots = timeslot.filter((ts) =>
+				selectedSlots.includes(ts.id)
+			);
+
+			// Only include dates that have selected timeslots
+			if (filteredTimeslots.length > 0) {
+				acc[date] = { title, timeslot: filteredTimeslots };
+			}
+
+			return acc;
+		},
+		{} as Schedule
+	);
 
 	if (error) {
 		return (
@@ -145,29 +159,26 @@ const Scheduler = ({ goBack, event }: { goBack: () => void; event: Event }) => {
 				Scheduler
 			</h1>
 			<hr className="border-t-2 border-indigo-500 mb-6" />
-			<p className="text-gray-600 mb-2">Please provide your availabilities:</p>
-			<p className="text-2xl">My availabilities</p>
+			<p className="text-2xl font-semibold">Review</p>
+			<p className="mb-2">These are the timeslots that you have selected:</p>
 			<p className="mb-8">
 				{`Between ${dayjs(event.startDateRange).format("DD-MM-YY")} and ${dayjs(
 					event.endDateRange
 				).format("DD-MM-YY")}`}
 			</p>
-			<p className="mb-2">Select all the timeslots which you are available</p>
+
 			<div className="rounded-md">
-				{Object.entries(schedule).map(([date, { title, timeslot }]) => (
+				{Object.entries(filteredSchedule).map(([date, { title, timeslot }]) => (
 					<div key={date} className="mb-4">
 						<h2 className="font-semibold mb-2">{title}</h2>{" "}
 						{/* Display the date title */}
 						<div className="grid gap-2">
 							{timeslot.map(({ time, id }: { time: string; id: number }) => {
-								const isSelected = selectedSlots.includes(id); // Check if the slot is selected based on ID
 								return (
 									<button
 										key={id}
-										onClick={() => toggleSlot(id)} // Toggle the selected slot by ID
-										className={`px-4 py-2 rounded-md border text-center w-full ${
-											isSelected ? "bg-indigo-500 text-white" : "bg-gray-200"
-										}`}
+										className={`px-4 py-2 rounded-md border text-center w-full bg-gray-200`}
+										disabled={true}
 									>
 										{time}
 									</button>
@@ -177,17 +188,7 @@ const Scheduler = ({ goBack, event }: { goBack: () => void; event: Event }) => {
 					</div>
 				))}
 			</div>
-			{/* <div className="mt-4">
-				<h3 className="font-semibold">Selected Slots:</h3>
-				<ul className="text-sm text-gray-700">
-					{selectedSlots.length > 0 ? (
-						selectedSlots.map((slot) => <li key={slot}>{slot}</li>)
-					) : (
-						<li>No slots selected</li>
-					)}
-				</ul>
-			</div> */}
-			<div className="flex justify-between mt-4">
+			<div className="flex justify-between mt-8">
 				<Button onClick={goBack} className="bg-indigo-500 text-white">
 					Back
 				</Button>
@@ -196,6 +197,94 @@ const Scheduler = ({ goBack, event }: { goBack: () => void; event: Event }) => {
 					Submit
 				</Button>
 			</div>
+		</div>
+	);
+};
+
+const Scheduler = ({ goBack, event }: { goBack: () => void; event: Event }) => {
+	const [selectedSlots, setSelectedSlots] = useState<number[]>([]);
+	const [showReview, setShowReview] = useState(false);
+
+	const schedule = convertTimeslotsToSchedule(event.timeslots);
+
+	const toggleSlot = (id: number) => {
+		setSelectedSlots((prevSelectedSlots) => {
+			if (prevSelectedSlots.includes(id)) {
+				return prevSelectedSlots.filter((slotId) => slotId !== id);
+			} else {
+				return [...prevSelectedSlots, id];
+			}
+		});
+	};
+
+	return (
+		<div className="p-4 max-w-md mx-auto font-sans">
+			{showReview ? (
+				<Review
+					goBack={() => setShowReview(false)}
+					event={event}
+					schedule={schedule}
+					selectedSlots={selectedSlots}
+				/>
+			) : (
+				<>
+					<h1 className="mb-4 text-4xl font-bold text-center text-indigo-500">
+						Scheduler
+					</h1>
+					<hr className="border-t-2 border-indigo-500 mb-6" />
+					<p className="text-gray-600 mb-2">
+						Please provide your availabilities:
+					</p>
+					<p className="text-2xl">My availabilities</p>
+					<p className="mb-8">
+						{`Between ${dayjs(event.startDateRange).format(
+							"DD-MM-YY"
+						)} and ${dayjs(event.endDateRange).format("DD-MM-YY")}`}
+					</p>
+					<p className="mb-2">
+						Select all the timeslots which you are available
+					</p>
+					<div className="rounded-md">
+						{Object.entries(schedule).map(([date, { title, timeslot }]) => (
+							<div key={date} className="mb-4">
+								<h2 className="font-semibold mb-2">{title}</h2>{" "}
+								{/* Display the date title */}
+								<div className="grid gap-2">
+									{timeslot.map(
+										({ time, id }: { time: string; id: number }) => {
+											const isSelected = selectedSlots.includes(id); // Check if the slot is selected based on ID
+											return (
+												<button
+													key={id}
+													onClick={() => toggleSlot(id)} // Toggle the selected slot by ID
+													className={`px-4 py-2 rounded-md border text-center w-full ${
+														isSelected
+															? "bg-indigo-500 text-white"
+															: "bg-gray-200"
+													}`}
+												>
+													{time}
+												</button>
+											);
+										}
+									)}
+								</div>
+							</div>
+						))}
+					</div>
+					<div className="flex justify-between mt-8">
+						<Button onClick={goBack} className="bg-indigo-500 text-white">
+							Back
+						</Button>
+						<Button
+							onClick={() => setShowReview(true)}
+							className="bg-indigo-500 text-white"
+						>
+							Next
+						</Button>
+					</div>
+				</>
+			)}
 		</div>
 	);
 };
@@ -308,10 +397,6 @@ export default function MultiStepScheduler() {
 							<strong>Meeting format:</strong>
 							<span className="block">{event.format}</span>
 						</p>
-						{/* there's no venue <p> 
-							<strong>Venue:</strong>
-							<span className="block">{meetingData.venue}</span>
-						</p>*/}
 					</div>
 
 					<div className="space-y-4">

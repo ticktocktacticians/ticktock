@@ -17,6 +17,9 @@ start-client:
 start-server:
   cd ./server && DOTENV_PATH=../.env go run *.go
 
+start-server-live-reload:
+  cd ./server && DOTENV_PATH=../.env nodemon --exec go run server.go --signal SIGTERM
+
 start-infra:
   cd ./infra && docker compose up --detach
 

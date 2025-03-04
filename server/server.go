@@ -11,6 +11,7 @@ import (
 	handlersUtils "server/handlers/utils"
 	"server/models"
 
+	"github.com/go-chi/chi/v5"
 	"github.com/joho/godotenv"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -102,12 +103,19 @@ func main() {
 	// init server env
 	env := &handlersUtils.Env{DB: db, Auth: auth}
 
+	// no auth routes
+	attendeeMux := chi.NewRouter()
+	attendeeMux.Handle("GET /attendee/event/{id}", handlersUtils.Handler{Env: env, H: handlers.GetAttendeeEvent})
+	attendeeMux.Handle("GET /attendee/availability/{id}", handlersUtils.Handler{Env: env, H: handlers.GetAttendeeAvailabity})
+	attendeeMux.Handle("POST /attendee/availability", handlersUtils.Handler{Env: env, H: handlers.CreateAttendeeAvailability})
+
 	// authenticated routes
 	authMux := http.NewServeMux()
 	authMux.Handle("GET /user", handlersUtils.Handler{Env: env, H: handlers.GetUser})
 	authMux.Handle("POST /user", handlersUtils.Handler{Env: env, H: handlers.CreateUser})
 
 	mux := http.NewServeMux()
+	mux.Handle("/attendee/", attendeeMux)
 	mux.Handle("/auth/", http.StripPrefix("/auth", auth.Authenticate(authMux)))
 
 	slog.Info("Server starting on port 8080")

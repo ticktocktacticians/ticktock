@@ -10,6 +10,6 @@ type Timeslot struct {
 
 	// associations
 	EventID       uint            `gorm:"not null" json:"eventID"`
-	Event         Event           `gorm:"foreignKey:event_id;references:id" json:"event"`
-	Availabilites []*Availability `gorm:"many2many:event_timeslot_attendee_availabilities;" json:"availabilites"`
+	Event         *Event          `gorm:"foreignKey:event_id;references:id" json:"event,omitempty"`
+	Availabilites *[]Availability `gorm:"many2many:event_timeslot_attendee_availabilities;" json:"availabilites,omitempty"`
 }

@@ -17,7 +17,7 @@ type Notification struct {
 
 	// associations
 	UserID  uuid.UUID `gorm:"type:uuid;not null" json:"userID"`
-	User    User      `gorm:"foreignKey:user_id;references:id;not null" json:"user"`
+	User    *User     `gorm:"foreignKey:user_id;references:id;not null" json:"user,omitempty"`
 	EventID uint      `gorm:"not null" json:"eventID"`
-	Event   Event     `gorm:"foreignKey:event_id;references:id;not null" json:"event"`
+	Event   *Event    `gorm:"foreignKey:event_id;references:id;not null" json:"event,omitempty"`
 }

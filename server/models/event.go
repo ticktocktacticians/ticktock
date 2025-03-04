@@ -21,8 +21,8 @@ type Event struct {
 	Format enumtypes.Format      `gorm:"type:format;not null" json:"format"`
 
 	// associations
-	CreatorID uuid.UUID  `gorm:"type:uuid;not null" json:"creatorID"`
-	Creator   User       `gorm:"foreignKey:creator_id;references:id;not null" json:"creator"`
-	Attendees []User     `gorm:"many2many:event_attendees;" json:"attendees"`
-	Timeslots []Timeslot `json:"timeslots"`
+	CreatorID uuid.UUID   `gorm:"type:uuid;not null" json:"creatorID"`
+	Creator   *User       `gorm:"foreignKey:creator_id;references:id;not null" json:"creator,omitempty"`
+	Attendees *[]User     `gorm:"many2many:event_attendees;" json:"attendees,omitempty"`
+	Timeslots *[]Timeslot `json:"timeslots,omitempty"`
 }

@@ -11,7 +11,7 @@ type User struct {
 	Alias     string    `json:"alias"`
 
 	// associations
-	Availabilities []Availability `gorm:"foreignKey:attendee_id" json:"availabilities"`
-	Events         []*Event       `gorm:"many2many:event_attendees" json:"events"`
-	Bookings       []*Booking     `gorm:"many2many:booking_attendees" json:"bookings"`
+	Availabilities *[]Availability `gorm:"foreignKey:attendee_id" json:"availabilities,omitempty"`
+	Events         *[]Event        `gorm:"many2many:event_attendees" json:"events,omitempty"`
+	Bookings       *[]Booking      `gorm:"many2many:booking_attendees" json:"bookings,omitempty"`
 }

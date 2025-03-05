@@ -18,6 +18,7 @@ import (
 )
 
 func main() {
+
 	dotenvPath := os.Getenv("DOTENV_PATH")
 	if dotenvPath == "" {
 		dotenvPath = "./env"
@@ -114,6 +115,7 @@ func main() {
 	authMux.Handle("GET /user", handlersUtils.Handler{Env: env, H: handlers.GetUser})
 	authMux.Handle("POST /user", handlersUtils.Handler{Env: env, H: handlers.CreateUser})
 	authMux.Handle("GET /event/{id}", handlersUtils.Handler{Env: env, H: handlers.GetEventDetails})
+	authMux.Handle("POST /event/attendees-timeslots", handlersUtils.Handler{Env: env, H: handlers.GetAttendeesTimeslotsForEvent})
 
 	mux := http.NewServeMux()
 	mux.Handle("/attendee/", attendeeMux)

@@ -12,8 +12,6 @@ export default function CreateMeetingDetailsPage() {
   const params = useParams();
   const [event, setEvent] = useState<Event | null>(null);
 
-  console.log(">> params = ", params); // get the meeting Id
-
   useEffect(() => {
     if (!params.meetingId) return;
 
@@ -52,7 +50,7 @@ export default function CreateMeetingDetailsPage() {
             </div>
           </div>
 
-          <MeetingAttendeeAvailabilityAccordion />
+          <MeetingAttendeeAvailabilityAccordion event={event} />
         </div>
       ) : (
         "Loading event details..."

@@ -6,6 +6,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { Button } from "@/components/ui/button";
 import { Card, CardTitle } from "@/components/ui/card";
 import { Separator } from "@radix-ui/react-separator";
 
@@ -68,9 +69,18 @@ export const MeetingAttendeeAvailabilityAccordion = () => {
             value={attendee.name}
             className="outline-no-bottom last:border-b-2 border-gray-200 pt-2"
           >
-
-            <AccordionTrigger className="flex justify-between items-center px-4 py-1 hover:bg-gray-100 cursor-pointer">
-              <span className="text-xl font-bold mb-3 ">{attendee.name}</span>
+            <AccordionTrigger className="w-full px-4 py-2 hover:bg-gray-100 cursor-pointer">
+              <div className="flex justify-between items-center w-full">
+                <span className="text-xl font-bold">{attendee.name}</span>
+                <div className="flex space-x-4 pr-3">
+                  <Button variant="outline" size="sm">
+                    Completed
+                  </Button>
+                  <Button variant="outline" size="sm">
+                    Resend email
+                  </Button>
+                </div>
+              </div>
             </AccordionTrigger>
             <AccordionContent className="px-4 py-2">
               <Separator className="border-b border-slate-400" />

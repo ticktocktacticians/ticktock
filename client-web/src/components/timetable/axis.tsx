@@ -1,20 +1,27 @@
-export default async function Axis() {
-  const labels = [];
-  for (let hour = 0; hour < 24; hour++) {
-    labels.push(hour);
-  }
+"use client"
+
+import { INTERVALS, INTERVALS_PER_HOUR, NUM_TIMESLOTS } from "./timetable";
+
+export default function Axis() {
   return (
     <div className="flex h-10 w-fit justify-between">
-      {labels.map((label, i) => {
-        const displayLabel = label > 12 ? label - 12 : label;
+      {INTERVALS.map((label) => {
+        let displayLabel: number|null = null;
+
+        if (label % INTERVALS_PER_HOUR === 0) {
+          if (label > NUM_TIMESLOTS)  label = label - NUM_TIMESLOTS;
+          const hour = label / INTERVALS_PER_HOUR;
+          displayLabel = hour > 12 ? hour - 12 : hour;
+        }
+
         return (
           <div
             key={`axis-${label}`}
-            className={`w-8 h-10 flex items-end transform ${
-              displayLabel >= 10 ? "translate-x-[-8px]" : "translate-x-[-5px]"
+            className={`w-4 h-10 flex items-end transform ${
+              displayLabel && displayLabel >= 10 ? "translate-x-[-8px]" : "translate-x-[-5px]"
             }`}
           >
-            {i === 0 ? '' : displayLabel}
+            {displayLabel}
           </div>
         );
       })}

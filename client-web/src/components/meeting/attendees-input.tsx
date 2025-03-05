@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label";
 import Required from "@/components/common/required";
 import { useState } from "react";
 import { Button } from "../ui/button";
+import { X } from "lucide-react";
 
 export default function AttendeesInput() {
   const [attendee, setAttendee] = useState<string>("");
@@ -43,7 +44,7 @@ export default function AttendeesInput() {
                 setAttendees(attendees.filter((a) => a !== attendee));
               }}
             >
-              x
+              <X />
             </span>
           </Button>
         ))}

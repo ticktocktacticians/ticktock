@@ -1,4 +1,6 @@
-export default async function DaysColumn({ days }: { days: string[] }) {
+"use client"
+
+export default function DaysColumn({ days }: { days: string[] }) {
   return (
     <div className="flex flex-col">
       <div className="box-border w-36 h-10 p-2 text-right">{}</div>

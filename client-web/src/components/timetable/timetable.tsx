@@ -7,25 +7,31 @@ import TimeslotsSelector from "./timeslots-selector";
 /** @TODO enhancement - pagination */
 
 const DATE_FORMAT = "ddd, D MMM YY";
-const INTERVALS_PER_HOUR = 2;
+export const INTERVALS_PER_HOUR = 2;
 export const NUM_TIMESLOTS = INTERVALS_PER_HOUR * 24;
+
+const START_INTERVAl = 7.5 * INTERVALS_PER_HOUR; // i.e. 7.30am
+
+/** Represents timeslot of the day.
+ * e.g. 0 represents midnight,
+ * and assuming 2 intervals per hour, 15 represents 7:30am */
+export const INTERVALS: number[] = [];
+for (let i = START_INTERVAl; i < NUM_TIMESLOTS + START_INTERVAl; i++) INTERVALS.push(i);
 
 interface TimeTableProps {
   dateRange: DateRange;
 }
 
 export interface DateRange {
-  start: Date;
-  end: Date;
+  start: Date|undefined;
+  end: Date|undefined;
 }
 
 export default function Timetable({ dateRange }: TimeTableProps) {
-  if (dateRange.start > dateRange.end) {
-    return <div>Invalid dateRange</div>;
-  }
+  const startDate = dateRange.start ? dayjs(dateRange.start) : dayjs();
+  const endDate = dateRange.end ? dayjs(dateRange.end) : startDate.add(7, "day");
 
-  const startDate = dayjs(dateRange.start);
-  const endDate = dayjs(dateRange.end);
+  if (startDate > endDate) return <div>Invalid dateRange</div>;
 
   const numDays = endDate.diff(startDate, "day");
 
@@ -38,7 +44,7 @@ export default function Timetable({ dateRange }: TimeTableProps) {
 
   return (
     <TimetableProvider>
-      <div className="w-[500px] flex overflow-y-auto">
+      <div className="w-[600px] flex overflow-y-auto">
         <DaysColumn days={days} />
         <div className="overflow-x-auto">
           <Axis />

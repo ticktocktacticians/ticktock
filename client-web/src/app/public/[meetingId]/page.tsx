@@ -229,11 +229,16 @@ const Scheduler = ({ goBack, event }: { goBack: () => void; event: Event }) => {
 		});
 	};
 
+	function showReviewSection(show: boolean) {
+		window.scrollTo(0, 0);
+		setShowReview(show);
+	}
+
 	return (
 		<>
 			{showReview ? (
 				<Review
-					goBack={() => setShowReview(false)}
+					goBack={() => showReviewSection(false)}
 					event={event}
 					schedule={schedule}
 					selectedSlots={selectedSlots}
@@ -296,7 +301,7 @@ const Scheduler = ({ goBack, event }: { goBack: () => void; event: Event }) => {
 							Back
 						</Button>
 						<Button
-							onClick={() => setShowReview(true)}
+							onClick={() => showReviewSection(true)}
 							className="bg-indigo-500 text-white w-16 h-10 px-4 py-2 rounded-md"
 						>
 							Next
@@ -346,6 +351,11 @@ export default function MultiStepScheduler() {
 		fetchData();
 	}, [params.meetingId]); // Use specific dependencies to avoid unnecessary re-renders
 
+	function showSchedulerSection(show: boolean) {
+		window.scrollTo(0, 0);
+		setShowScheduler(show);
+	}
+
 	useEffect(() => {
 		const timer = setTimeout(() => {
 			if (!event) {
@@ -390,7 +400,7 @@ export default function MultiStepScheduler() {
 		<div className="w-full">
 			<div className="max-w-lg mx-auto font-semibold space-y-4 text-sm">
 				{showScheduler ? (
-					<Scheduler goBack={() => setShowScheduler(false)} event={event} />
+					<Scheduler goBack={() => showSchedulerSection(false)} event={event} />
 				) : (
 					<>
 						<p className="text-slate-500">
@@ -420,7 +430,9 @@ export default function MultiStepScheduler() {
 								<h2 className="text-xl text-indigo-600">Your details</h2>
 								<p className="space-y-1">
 									<span className="text-slate-400">Name:</span>
-									<span className="block">{!event.attendees[0].alias ? "-" : event.attendees[0].alias}</span>
+									<span className="block">
+										{!event.attendees[0].alias ? "-" : event.attendees[0].alias}
+									</span>
 								</p>
 								<p className="space-y-1">
 									<span className="text-slate-400">Email address:</span>
@@ -429,9 +441,9 @@ export default function MultiStepScheduler() {
 							</div>
 						</div>
 
-						<div className="absolute bottom-0 right-0 p-8">
+						<div className="flex justify-end">
 							<Button
-								onClick={() => setShowScheduler(true)}
+								onClick={() => showSchedulerSection(true)}
 								className="bg-indigo-600 text-white w-16 h-10 px-4 py-2 rounded-md"
 							>
 								Next

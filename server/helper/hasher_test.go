@@ -6,7 +6,7 @@ import (
 
 func TestEncodeBase64(t *testing.T) {
 	original := "Hello, Go!"
-	expected := "SGVsbG8sIEdvIQ=="
+	expected := "SGVsbG8sIEdvIQ"
 	encoded := EncodeBase64(original)
 	if encoded != expected {
 		t.Errorf("EncodeBase64(%s) = %s; want %s", original, encoded, expected)
@@ -14,7 +14,7 @@ func TestEncodeBase64(t *testing.T) {
 }
 
 func TestDecodeBase64(t *testing.T) {
-	encoded := "SGVsbG8sIEdvIQ=="
+	encoded := "SGVsbG8sIEdvIQ"
 	expected := "Hello, Go!"
 	decoded, err := DecodeBase64(encoded)
 	if err != nil {

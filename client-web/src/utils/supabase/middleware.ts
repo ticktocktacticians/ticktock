@@ -38,7 +38,7 @@ export async function updateSession(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   // these are the only paths non-authed users are allowed to access
-  const noAuthPaths = ["auth", "login", "sandbox"];
+  const noAuthPaths = ["auth", "login", "sandbox", "public"];
   if (
     !user &&
     !request.nextUrl.pathname.match(`^\/(${noAuthPaths.join('|')})`)

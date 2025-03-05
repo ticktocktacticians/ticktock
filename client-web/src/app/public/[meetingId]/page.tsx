@@ -10,6 +10,7 @@ import {
 	getAttendeeEvent,
 } from "./actions";
 import dayjs from "dayjs";
+import _ from "lodash";
 
 interface Event {
 	id: number;
@@ -61,7 +62,7 @@ function convertTimeslotsToSchedule(timeslots: Timeslot[]): Schedule {
 	timeslots.forEach(({ id, startDateTime }) => {
 		const dateObj = dayjs(startDateTime);
 		const dateKey = dateObj.format("YYYY-MM-DD"); // "2025-03-03"
-		const time = dateObj.format("hh:mma"); // "09:30AM"
+		const time = dateObj.format("hh:mm A"); // "09:30AM"
 		const title = dateObj.format("ddd, D MMM YY"); // "Mon, 3 Mar 25"
 
 		if (!schedule[dateKey]) {
@@ -139,33 +140,38 @@ const Review = ({
 
 	if (submitted) {
 		return (
-			<div className="p-4 max-w-md mx-auto font-sans text-center">
-				<h1 className="text-2xl font-bold mb-4 text-gray-900">Scheduler</h1>
-				<p className="text-gray-700 mb-4">
-					Thank you for providing your availabilities. The meeting host will
-					soon send the finalized meeting details to you.
-				</p>
-				<p className="text-gray-700">
-					If you would like to make any changes to your inputs, please kindly
-					contact the meeting host.
-				</p>
+			<div className="mt-24">
+				<div className="max-w-md mx-auto font-sans text-center space-y-6">
+					<h1 className="text-xl font-semibold mb-4 text-indigo-600">
+						Availability submitted!
+					</h1>
+					<p className="text-slate-500">
+						Thank you for providing your availabilities. The meeting host will
+						soon send the finalized meeting details to you.
+					</p>
+					<p className="text-slate-500">
+						If you would like to make any changes to your inputs, please kindly
+						contact the meeting host.
+					</p>
+				</div>
 			</div>
 		);
 	}
 
 	return (
-		<div className="p-4 max-w-md mx-auto font-sans">
-			<h1 className="mb-4 text-4xl font-bold text-center text-indigo-500">
-				Scheduler
-			</h1>
-			<hr className="border-t-2 border-indigo-500 mb-6" />
-			<p className="text-2xl font-semibold">Review</p>
-			<p className="mb-2">These are the timeslots that you have selected:</p>
-			<p className="mb-8">
-				{`Between ${dayjs(event.startDateRange).format("DD-MM-YY")} and ${dayjs(
-					event.endDateRange
-				).format("DD-MM-YY")}`}
-			</p>
+		<div className="space-y-6">
+			<p className="text-xl font-semibold text-indigo-600">Review</p>
+			<div className="space-y-1">
+				<p className="text-slate-500">
+					These are the timeslots that you have selected:
+				</p>
+				<p>
+					{`Between ${dayjs(event.startDateRange).format(
+						"DD-MM-YY"
+					)} and ${dayjs(event.endDateRange).format("DD-MM-YY")}`}
+				</p>
+			</div>
+			<hr className="border-t-2 border-slate-500" />
 
 			<div className="rounded-md">
 				{Object.entries(filteredSchedule).map(([date, { title, timeslot }]) => (
@@ -177,7 +183,7 @@ const Review = ({
 								return (
 									<button
 										key={id}
-										className={`px-4 py-2 rounded-md border text-center w-full bg-gray-200`}
+										className={`px-4 py-2 rounded-md border text-center w-full bg-slate-100`}
 										disabled={true}
 									>
 										{time}
@@ -188,12 +194,18 @@ const Review = ({
 					</div>
 				))}
 			</div>
-			<div className="flex justify-between mt-8">
-				<Button onClick={goBack} className="bg-indigo-500 text-white">
+			<div className="flex justify-between">
+				<Button
+					onClick={goBack}
+					className="bg-white border-slate-200 text-black w-16 h-10 px-4 py-2 rounded-md"
+				>
 					Back
 				</Button>
 				{/** change to submit onclick */}
-				<Button onClick={handleSubmit} className="bg-indigo-500 text-white">
+				<Button
+					onClick={handleSubmit}
+					className="bg-indigo-500 text-white w-16 h-10 px-4 py-2 rounded-md"
+				>
 					Submit
 				</Button>
 			</div>
@@ -218,7 +230,7 @@ const Scheduler = ({ goBack, event }: { goBack: () => void; event: Event }) => {
 	};
 
 	return (
-		<div className="p-4 max-w-md mx-auto font-sans">
+		<>
 			{showReview ? (
 				<Review
 					goBack={() => setShowReview(false)}
@@ -227,65 +239,72 @@ const Scheduler = ({ goBack, event }: { goBack: () => void; event: Event }) => {
 					selectedSlots={selectedSlots}
 				/>
 			) : (
-				<>
-					<h1 className="mb-4 text-4xl font-bold text-center text-indigo-500">
-						Scheduler
-					</h1>
-					<hr className="border-t-2 border-indigo-500 mb-6" />
-					<p className="text-gray-600 mb-2">
-						Please provide your availabilities:
-					</p>
-					<p className="text-2xl">My availabilities</p>
-					<p className="mb-8">
-						{`Between ${dayjs(event.startDateRange).format(
-							"DD-MM-YY"
-						)} and ${dayjs(event.endDateRange).format("DD-MM-YY")}`}
-					</p>
-					<p className="mb-2">
-						Select all the timeslots which you are available
-					</p>
-					<div className="rounded-md">
-						{Object.entries(schedule).map(([date, { title, timeslot }]) => (
-							<div key={date} className="mb-4">
-								<h2 className="font-semibold mb-2">{title}</h2>{" "}
-								{/* Display the date title */}
-								<div className="grid gap-2">
-									{timeslot.map(
-										({ time, id }: { time: string; id: number }) => {
-											const isSelected = selectedSlots.includes(id); // Check if the slot is selected based on ID
-											return (
-												<button
-													key={id}
-													onClick={() => toggleSlot(id)} // Toggle the selected slot by ID
-													className={`px-4 py-2 rounded-md border text-center w-full ${
-														isSelected
-															? "bg-indigo-500 text-white"
-															: "bg-gray-200"
-													}`}
-												>
-													{time}
-												</button>
-											);
-										}
-									)}
-								</div>
-							</div>
-						))}
+				<div className="space-y-6">
+					<div className="space-y-6">
+						<p className="text-slate-500 mb-4">
+							Please provide your availabilities:
+						</p>
+						<div className="space-y-1">
+							<p className="text-2xl text-indigo-600">My availabilities</p>
+							<p className="mb-8">
+								{`Between ${dayjs(event.startDateRange).format(
+									"DD/MM/YY"
+								)} and ${dayjs(event.endDateRange).format("DD/MM/YY")}`}
+							</p>
+						</div>
+
+						<hr className="border-t-2 border-slate-500" />
 					</div>
-					<div className="flex justify-between mt-8">
-						<Button onClick={goBack} className="bg-indigo-500 text-white">
+					<div className="space-y-6">
+						<p className="italic text-slate-500 font-normal">
+							Select all the timeslots which you are available
+						</p>
+						<div className="rounded-md">
+							{Object.entries(schedule).map(([date, { title, timeslot }]) => (
+								<div key={date} className="mb-4">
+									<h2 className="font-semibold mb-2">{title}</h2>{" "}
+									{/* Display the date title */}
+									<div className="grid gap-2">
+										{timeslot.map(
+											({ time, id }: { time: string; id: number }) => {
+												const isSelected = selectedSlots.includes(id); // Check if the slot is selected based on ID
+												return (
+													<button
+														key={id}
+														onClick={() => toggleSlot(id)} // Toggle the selected slot by ID
+														className={`px-4 py-2 rounded-md border text-center w-full ${
+															isSelected
+																? "bg-indigo-500 text-white"
+																: "bg-slate-100"
+														}`}
+													>
+														{time}
+													</button>
+												);
+											}
+										)}
+									</div>
+								</div>
+							))}
+						</div>
+					</div>
+					<div className="flex justify-between">
+						<Button
+							onClick={goBack}
+							className="bg-white border-slate-200 text-black w-16 h-10 px-4 py-2 rounded-md"
+						>
 							Back
 						</Button>
 						<Button
 							onClick={() => setShowReview(true)}
-							className="bg-indigo-500 text-white"
+							className="bg-indigo-500 text-white w-16 h-10 px-4 py-2 rounded-md"
 						>
 							Next
 						</Button>
 					</div>
-				</>
+				</div>
 			)}
-		</div>
+		</>
 	);
 };
 
@@ -341,8 +360,8 @@ export default function MultiStepScheduler() {
 
 	if (availabilityExist) {
 		return (
-			<div>
-				<p className="text-center">
+			<div className="mt-28">
+				<p className="text-sm text-slate-500 text-center">
 					You have already submitted your availabilities for this meeting.
 				</p>
 			</div>
@@ -368,61 +387,59 @@ export default function MultiStepScheduler() {
 	if (!event) return <div>Loading...</div>;
 
 	return (
-		<div className="max-w-lg mx-auto mt-10 space-y-6 font-sans">
-			{showScheduler ? (
-				<Scheduler goBack={() => setShowScheduler(false)} event={event} />
-			) : (
-				<>
-					<h1 className="text-4xl font-bold text-center text-indigo-500">
-						Scheduler
-					</h1>
-					<hr className="border-t-2 border-indigo-500 mb-6" />
-					<p>
-						You're invited to provide your availabilities for the following:
-					</p>
+		<div className="w-full">
+			<div className="max-w-lg mx-auto font-semibold space-y-4 text-sm">
+				{showScheduler ? (
+					<Scheduler goBack={() => setShowScheduler(false)} event={event} />
+				) : (
+					<>
+						<p className="text-slate-500">
+							{`You're invited to provide your availabilities for the following:`}
+						</p>
+						<hr className="border-t-2 border-slate-500" />
+						<div className="space-y-8">
+							<div className="space-y-4">
+								<h2 className="text-xl text-indigo-600">Meeting Details</h2>
+								<p className="space-y-1">
+									<span className="text-slate-400">Meeting Title:</span>
+									<span className="block">{event.title}</span>
+								</p>
+								<p className="space-y-1">
+									<span className="text-slate-400">
+										Meeting Duration (in minutes):
+									</span>
+									<span className="block">{event.duration}</span>
+								</p>
+								<p className="space-y-1">
+									<span className="text-slate-400">Meeting Format:</span>
+									<span className="block">{_.capitalize(event.format)}</span>
+								</p>
+							</div>
 
-					<div className="space-y-4">
-						<h2 className="text-2xl font-semibold text-indigo-500">
-							Meeting details
-						</h2>
-						<p>
-							<strong>Meeting title:</strong>
-							<span className="block">{event.title}</span>
-						</p>
-						<p>
-							<strong>Meeting duration:</strong>
-							<span className="block">{event.duration}</span>
-						</p>
-						<p>
-							<strong>Meeting format:</strong>
-							<span className="block">{event.format}</span>
-						</p>
-					</div>
+							<div className="space-y-4">
+								<h2 className="text-xl text-indigo-600">Your details</h2>
+								<p className="space-y-1">
+									<span className="text-slate-400">Name:</span>
+									<span className="block">{!event.attendees[0].alias ? "-" : event.attendees[0].alias}</span>
+								</p>
+								<p className="space-y-1">
+									<span className="text-slate-400">Email address:</span>
+									<span className="block">{event.attendees[0].email}</span>
+								</p>
+							</div>
+						</div>
 
-					<div className="space-y-4">
-						<h2 className="text-2xl font-semibold text-indigo-500">
-							Your details
-						</h2>
-						<p>
-							<strong>Name:</strong>
-							<span className="block">{event.attendees[0].alias}</span>
-						</p>
-						<p>
-							<strong>Email address:</strong>
-							<span className="block">{event.attendees[0].email}</span>
-						</p>
-					</div>
-
-					<div className="flex justify-end">
-						<Button
-							onClick={() => setShowScheduler(true)}
-							className="bg-indigo-500 text-white"
-						>
-							Next
-						</Button>
-					</div>
-				</>
-			)}
+						<div className="absolute bottom-0 right-0 p-8">
+							<Button
+								onClick={() => setShowScheduler(true)}
+								className="bg-indigo-600 text-white w-16 h-10 px-4 py-2 rounded-md"
+							>
+								Next
+							</Button>
+						</div>
+					</>
+				)}
+			</div>
 		</div>
 	);
 }

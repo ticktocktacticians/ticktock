@@ -151,7 +151,7 @@ export const MeetingAttendeeAvailabilityAccordion = ({
 
         {Object.entries(availabilitiesByDate).map((dayAndTimeslots) => {
           return (
-            <div>
+            <div key={dayAndTimeslots[0]}>
               <p className="text-black">
                 {formatDate(dayAndTimeslots[0])}
               </p>
@@ -161,7 +161,7 @@ export const MeetingAttendeeAvailabilityAccordion = ({
                     key={timeslot}
                     className="flex justify-center max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow-sm hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700"
                   >
-                    <CardTitle>{timeslot.slice(0, 5)}</CardTitle>
+                    <CardTitle key={timeslot}>{timeslot.slice(0, 5)}</CardTitle>
                   </Card>
                 ))}
               </div>

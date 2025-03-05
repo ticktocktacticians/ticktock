@@ -12,7 +12,7 @@ import {
 import dayjs from "dayjs";
 import _ from "lodash";
 
-interface Event {
+export interface Event {
 	id: number;
 	title: string;
 	description: string;
@@ -37,21 +37,21 @@ interface Event {
 	timeslots: Timeslot[];
 }
 
-interface Timeslot {
+export interface Timeslot {
 	id: number;
 	eventID: number;
 	startDateTime: string;
 	endDateTime: string;
 }
 
-interface Schedule {
+export interface Schedule {
 	[date: string]: {
 		title: string;
 		timeslot: { time: string; id: number }[];
 	};
 }
 
-function convertTimeslotsToSchedule(timeslots: Timeslot[]): Schedule {
+export function convertTimeslotsToSchedule(timeslots: Timeslot[]): Schedule {
 	const schedule: Schedule = {};
 
 	// Sort timeslots by startDateTime in ascending order

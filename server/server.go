@@ -110,9 +110,10 @@ func main() {
 	attendeeMux.Handle("POST /attendee/availability", handlersUtils.Handler{Env: env, H: handlers.CreateAttendeeAvailability})
 
 	// authenticated routes
-	authMux := http.NewServeMux()
+	authMux := chi.NewRouter()
 	authMux.Handle("GET /user", handlersUtils.Handler{Env: env, H: handlers.GetUser})
 	authMux.Handle("POST /user", handlersUtils.Handler{Env: env, H: handlers.CreateUser})
+	authMux.Handle("GET /event/{id}", handlersUtils.Handler{Env: env, H: handlers.GetEventDetails})
 
 	mux := http.NewServeMux()
 	mux.Handle("/attendee/", attendeeMux)

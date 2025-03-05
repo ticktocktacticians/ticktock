@@ -40,7 +40,7 @@ export const MeetingAttendeeAvailabilityAccordion = () => {
   const attendeeAvailability = (attendeeAvailability) => {
     return (
       <div className="pt-3">
-        <p className="text-xl font-bold mb-3">Slots selected</p>
+        <p className="text-x font-bold mb-3">Slots selected</p>
         <p className="mb-2 text-black">{attendeeAvailability.date} </p>
         <div className="grid grid-cols-6 gap-6 py-4 overflow-x-auto">
           {attendeeAvailability.timeslots.map((timeslot) => (
@@ -59,8 +59,8 @@ export const MeetingAttendeeAvailabilityAccordion = () => {
   };
 
   return (
-    <div>
-      <h2 className="text-lg font-semibold mb-4">Your Attendees</h2>
+    <div className="pt-5">
+      <h2 className="text-2xl font-semibold mb-4">Your Attendees</h2>
 
       <Accordion type="single" collapsible className="w-full">
         {AttendeesInput.map((attendee) => (
@@ -69,19 +69,36 @@ export const MeetingAttendeeAvailabilityAccordion = () => {
             value={attendee.name}
             className="outline-no-bottom last:border-b-2 border-gray-200 pt-2"
           >
-            <AccordionTrigger className="w-full px-4 py-2 hover:bg-gray-100 cursor-pointer">
-              <div className="flex justify-between items-center w-full">
-                <span className="text-xl font-bold">{attendee.name}</span>
-                <div className="flex space-x-4 pr-3">
-                  <Button variant="outline" size="sm">
-                    Completed
-                  </Button>
-                  <Button variant="outline" size="sm">
-                    Resend email
-                  </Button>
-                </div>
+            {/* <AccordionTrigger className="w-full px-4 py-2 hover:bg-gray-100 cursor-pointer"> */}
+
+            <div className="flex justify-between items-center w-full">
+              <AccordionTrigger className="flex-grow text-left w-full px-4 py-4">
+                <span className="text-lg font-semibold">{attendee.name}</span>
+              </AccordionTrigger>
+              <div className="flex space-x-4 pr-3">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    console.log("Completed clicked");
+                  }}
+                >
+                  Completed
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    console.log("Resend email clicked");
+                  }}
+                >
+                  Resend email
+                </Button>
               </div>
-            </AccordionTrigger>
+            </div>
+            {/* </AccordionTrigger> */}
             <AccordionContent className="px-4 py-2">
               <Separator className="border-b border-slate-400" />
 

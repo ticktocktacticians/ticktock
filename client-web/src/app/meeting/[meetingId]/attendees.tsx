@@ -1,10 +1,6 @@
 "use client";
 
-import {
-  convertTimeslotsToSchedule,
-  Event,
-  Timeslot,
-} from "@/app/public/[meetingId]/page";
+import { Event } from "@/app/public/[meetingId]/page";
 import {
   Accordion,
   AccordionContent,
@@ -14,134 +10,16 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card, CardTitle } from "@/components/ui/card";
 import { Separator } from "@radix-ui/react-separator";
-import { useEffect, useState } from "react";
-import {
-  AttendeeAvailability,
-  AttendeesTimeslotsForEventRequest,
-  getAttendeesTimeslotsForEvent,
-} from "./actions";
+import { AttendeeAvailability } from "./actions";
 import { formatDate } from "@/app/utils/common";
-
-interface MappedAttendeesAvailabilities {
-  name: string;
-  availabilitiesByDate: Record<string, string[]>;
-}
-
-function groupAvailabilitiesByAttendee(
-  availabilities: AttendeeAvailability[]
-): Record<string, string[]> {
-  const grouped = availabilities.reduce(
-    (acc: Record<string, string[]>, curr) => {
-      if (!acc[curr.attendeeId]) {
-        acc[curr.attendeeId] = [curr.startDateTime];
-      } else {
-        //  acc[curr.attendeeId] will always be defined
-        acc[curr.attendeeId]!.push(curr.startDateTime);
-      }
-      return acc;
-    },
-    {}
-  );
-
-  // Sort each array chronologically
-  Object.keys(grouped).forEach((attendeeId) => {
-    grouped[attendeeId]!.sort((a, b) => a.localeCompare(b));
-  });
-
-  return grouped;
-}
-
-// groupedAvailabilites looks like this:
-// {
-//   "a865ed12-f9aa-4a59-a6e8-a296df3825bf": [
-//     "2025-03-09T01:00:00Z",
-//     "2025-03-10T01:00:00Z"
-//   ]
-// }
-function mapAttendeeAvailability(
-  groupedAvailabilities: Record<string, string[]>,
-  event: Event
-): MappedAttendeesAvailabilities[] {
-  const mappedAttendeesAvailabilities: MappedAttendeesAvailabilities[] = [];
-
-  for (const attendee of event.attendees) {
-    // attendee does not have any availabilities set yet
-    if (!groupedAvailabilities[attendee.id]) {
-      console.log("Attendee not found with id: ", attendee.id);
-      continue;
-    }
-    const attendeeIdentifier = attendee.email;
-    // should already be sorted when grouping
-    const availabilities = groupedAvailabilities[attendee.id];
-    const mappedAvailabilitiesPerDay = availabilities!.reduce(
-      (acc: Record<string, string[]>, utcDateTime: string) => {
-        // confirm that event date time string is in utc form
-        if (utcDateTime.includes("T") && new Date(utcDateTime)) {
-          const [dateStr, timeStr] = utcDateTime.split("T");
-          // empty string to fulfil typescript type check
-          const date = dateStr || "";
-          const time = timeStr || "";
-
-          if (!acc[date]) {
-            acc[date] = [time];
-          } else {
-            acc[date].push(time);
-          }
-        } else {
-          console.error("Invalid date time format: ", utcDateTime);
-        }
-        return acc;
-      },
-      {} as Record<string, string[]>
-    );
-
-    mappedAttendeesAvailabilities.push({
-      name: attendeeIdentifier,
-      availabilitiesByDate: mappedAvailabilitiesPerDay,
-    });
-  }
-
-  return mappedAttendeesAvailabilities;
-}
+import * as _ from "lodash";
+import { MappedAttendeesAvailabilities } from "./page";
 
 export const MeetingAttendeeAvailabilityAccordion = ({
-  event,
+  mappedAttendeesAvailabilities,
 }: {
-  event: Event;
+  mappedAttendeesAvailabilities: MappedAttendeesAvailabilities[];
 }) => {
-  const [mappedAttendeesAvailabilities, setAttendeesAvailabilities] = useState<
-    MappedAttendeesAvailabilities[] | null
-  >(null);
-  const { attendees } = event;
-
-  useEffect(() => {
-    const fetchAttendeeEvent = async () => {
-      try {
-        const response = await getAttendeesTimeslotsForEvent({
-          attendeeIds: event.attendees.map((attendee) => attendee.id),
-          eventId: event.id.toString(),
-        } as AttendeesTimeslotsForEventRequest);
-
-        if (response) {
-          const attendeesAvailabilities: AttendeeAvailability[] =
-            await response.json();
-
-          const groupedAvailabilitiesByAttendee = groupAvailabilitiesByAttendee(
-            attendeesAvailabilities
-          );
-
-          setAttendeesAvailabilities(
-            mapAttendeeAvailability(groupedAvailabilitiesByAttendee, event)
-          );
-        }
-      } catch (error) {
-        console.error("Failed to fetch attendee event:", error);
-      }
-    };
-
-    fetchAttendeeEvent();
-  }, [event]);
-
   const attendeeAvailability = (
     availabilitiesByDate: Record<string, string[]>
   ) => {
@@ -152,9 +30,7 @@ export const MeetingAttendeeAvailabilityAccordion = ({
         {Object.entries(availabilitiesByDate).map((dayAndTimeslots) => {
           return (
             <div key={dayAndTimeslots[0]}>
-              <p className="text-black">
-                {formatDate(dayAndTimeslots[0])}
-              </p>
+              <p className="text-black">{formatDate(dayAndTimeslots[0])}</p>
               <div className="grid grid-cols-6 gap-6 pt-1 pb-4 overflow-x-auto">
                 {dayAndTimeslots[1].map((timeslot) => (
                   <Card
@@ -199,7 +75,9 @@ export const MeetingAttendeeAvailabilityAccordion = ({
                     console.log("Completed clicked");
                   }}
                 >
-                  Completed
+                  {_.isEmpty(attendee.availabilitiesByDate)
+                    ? "Not Completed"
+                    : "Completed"}
                 </Button>
                 <Button
                   variant="outline"
@@ -209,6 +87,7 @@ export const MeetingAttendeeAvailabilityAccordion = ({
                     console.log("Resend email clicked");
                   }}
                 >
+                  {/*May not be useful to render resend email for completed submissions cos they cant submit again */}
                   Resend email
                 </Button>
               </div>

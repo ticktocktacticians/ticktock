@@ -4,17 +4,25 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { MappedAttendeesAvailabilities } from "./[meetingId]/page";
+import { MappedAttendeesAvailabilities } from "./page";
 import _ from "lodash";
-import { formatDate } from "../utils/common";
+import { formatDate } from "../../utils/common";
 import { Calendar, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useState } from "react";
+import { ConfirmationModal } from "./confirmation";
+import { Event } from "@/app/public/[meetingId]/page";
 
 export const ScheduleMeeting = ({
   attendeeAvailabilities,
+  event,
 }: {
   attendeeAvailabilities: MappedAttendeesAvailabilities[];
+  event: Event;
 }) => {
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [selectedTimeslot, setSelectedTimeslot] = useState<string | null>(null);
+
   //NOTE  temp function to duplicate attendee availabilities
   function duplicateTimeslots(
     attendeeAvailabilities: MappedAttendeesAvailabilities[]
@@ -50,7 +58,7 @@ export const ScheduleMeeting = ({
     allDates.forEach((date) => {
       // Check if every attendee has the date in their availability
       const allAttendeesHaveDate = attendees.every(
-        (attendee) => attendee.availabilitiesByDate[date]!?.length > 0
+        (attendee) => attendee.availabilitiesByDate[date]!.length > 0
       );
 
       // Skip dates where some attendees have no availability
@@ -102,7 +110,24 @@ export const ScheduleMeeting = ({
     findCommonDateTimes(duplicateTimeslots(attendeeAvailabilities))
   );
 
-  console.log(">> toWorkWith = ", toWorkWith);
+  const extendedAttendees = [
+    ...event.attendees,
+    { email: "email 1", id: "1", alias: "demo alias 1" },
+    { email: "email 2", id: "2", alias: "demo alias 2" },
+    { email: "email 3", id: "3", alias: "demo alias 3" },
+  ];
+
+  const eventWithExtendedAttendee = {
+    ...event,
+    attendees: extendedAttendees,
+  } as Event;
+
+  const handleConfirmBooking = (timeslot: string) => {
+    alert("Sending email notification to attendees on meeting confirmation");
+    console.log("Confirmed booking for:", timeslot);
+    setIsDialogOpen(false);
+  };
+
   return toWorkWith ? (
     <div>
       <h2 className="text-2xl font-semibold mb-4">
@@ -139,6 +164,8 @@ export const ScheduleMeeting = ({
                 className="text-indigo-600 mr-5"
                 onClick={(e) => {
                   e.stopPropagation();
+                  setSelectedTimeslot(commonDateTimeslot);
+                  setIsDialogOpen(true);
                   console.log("Book slot clicked");
                 }}
               >
@@ -155,6 +182,14 @@ export const ScheduleMeeting = ({
           </AccordionItem>
         ))}
       </Accordion>
+      {/* Using the separate dialog component */}
+      <ConfirmationModal
+        isOpen={isDialogOpen}
+        onOpenChange={setIsDialogOpen}
+        selectedTimeslot={selectedTimeslot}
+        onConfirm={handleConfirmBooking}
+        event={eventWithExtendedAttendee}
+      />
     </div>
   ) : (
     <p>No common timeslots</p>

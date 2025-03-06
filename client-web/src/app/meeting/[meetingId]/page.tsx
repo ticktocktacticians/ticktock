@@ -1,5 +1,5 @@
 "use client";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import {
   AttendeeAvailability,
@@ -11,7 +11,7 @@ import { MeetingAttendeeAvailabilityAccordion } from "./attendees";
 import { EventDetailCard } from "./eventDetailCard";
 import { Event } from "@/app/public/[meetingId]/page";
 import { Button } from "@/components/ui/button";
-import { ScheduleMeeting } from "../scheduleMeeting";
+import { ScheduleMeeting } from "./scheduleMeeting";
 import _ from "lodash";
 import { ChevronLeft } from "lucide-react";
 
@@ -252,7 +252,7 @@ export default function CreateMeetingDetailsPage() {
           </div>
 
           <h1 className="text-3xl flex font-bold mb-6">Schedule meeting</h1>
-          <ScheduleMeeting attendeeAvailabilities={attendeeAvailabilities} />
+          <ScheduleMeeting attendeeAvailabilities={attendeeAvailabilities} event={event} />
         </div>
       )}
     </div>

@@ -16,7 +16,7 @@ export default function AttendeesInput({ name }: { name: string }) {
    * check if this works
    */
   return (
-    <>
+    <div>
       <Label htmlFor="mandatoryAttendees">
         Mandatory attendees
         <Required />
@@ -33,10 +33,13 @@ export default function AttendeesInput({ name }: { name: string }) {
           }
         }}
       />
-      <input type="hidden" name={name} value={JSON.stringify(attendees)} />
       <div>
         {attendees.map((attendee, index) => (
-          <Button key={index} variant="outline" className="pointer-events-none">
+          <Button
+            key={index}
+            variant="outline"
+            className="pointer-events-none mr-2 mt-3"
+          >
             {attendee}
             <span
               className="flex justify-center items-center pointer-events-auto"
@@ -49,6 +52,7 @@ export default function AttendeesInput({ name }: { name: string }) {
           </Button>
         ))}
       </div>
-    </>
+      <input type="hidden" name={name} value={JSON.stringify(attendees)} />
+    </div>
   );
 }

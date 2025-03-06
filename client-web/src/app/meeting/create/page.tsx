@@ -23,24 +23,32 @@ const MEETING_DURATION_OPTS = [60, 120, 180, 240];
 
 export default function CreateMeetingPage() {
   return (
-    <div>
-      <h1>Create New Meeting</h1>
-
+    <div className="flex flex-col justify-center items-center">
       <form
         onKeyDown={(e: KeyboardEvent) =>
           e.key === "Enter" && e.preventDefault()
         }
         action={createMeeting}
+        className="flex flex-col gap-6 w-[600px]"
       >
-        <Label htmlFor="meetingTitle">
-          Meeting Title
-          <Required />
-        </Label>
-        <Input id="meetingTitle" name="meetingTitle" />
+        <h1 className="text-3xl w-full text-left font-bold mb-5">
+          Create New Meeting
+        </h1>
 
-        <Label htmlFor="meetingDesc">Meeting Description (if any)</Label>
-        <Textarea id="meetingDesc" name="meetingDesc" />
+        <div>
+          <Label htmlFor="meetingTitle">
+            Meeting Title
+            <Required />
+          </Label>
+          <Input id="meetingTitle" name="meetingTitle" />
+        </div>
 
+        <div>
+          <Label htmlFor="meetingDesc">Meeting Description (if any)</Label>
+          <Textarea id="meetingDesc" name="meetingDesc" />
+        </div>
+
+        <div>
         <Label htmlFor="meetingDuration">
           Meeting Duration (in minutes)
           <Required />
@@ -61,8 +69,8 @@ export default function CreateMeetingPage() {
               ))}
             </SelectGroup>
           </SelectContent>
-        </Select>
-
+        </Select></div>
+        <div>
         <Label htmlFor="meetingFormat">
           Meeting Format
           <Required />
@@ -76,13 +84,19 @@ export default function CreateMeetingPage() {
             <RadioGroupItem value="in-person" id="format-2" />
             <Label htmlFor="format-2">In-Person</Label>
           </div>
-        </RadioGroup>
+        </RadioGroup></div>
 
-        <h2>Who else should be in this meeting?</h2>
+        <h2 className="text-xl font-bold">
+          Who else should be in this meeting?
+        </h2>
 
         <AttendeesInput name="attendees" />
         <DateTimeSelector name="timeslots" />
-        <Button type="submit">Next</Button>
+        <div className="flex justify-center items-center">
+          <Button type="submit" className="w-[300px]">
+            Next
+          </Button>
+        </div>
       </form>
     </div>
   );

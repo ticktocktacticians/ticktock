@@ -25,7 +25,7 @@ export default function DatePicker({ date, setDate, disabled }: DatePickerProps)
         <Button
           variant={"outline"}
           className={cn(
-            "w-[280px] justify-start text-left font-normal",
+            "p-4 mx-3 justify-start text-left font-normal",
             !date && "text-muted-foreground"
           )}
         >
@@ -43,5 +43,5 @@ export default function DatePicker({ date, setDate, disabled }: DatePickerProps)
         />
       </PopoverContent>
     </Popover>
-  )
+  );
 }

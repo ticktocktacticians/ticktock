@@ -20,7 +20,7 @@ export default function DateTimeSelector({ name }: { name: string }) {
   }, [startDate]);
 
   return (
-    <>
+    <div>
       <DateRangeInput
         startDate={startDate}
         endDate={endDate}
@@ -30,6 +30,10 @@ export default function DateTimeSelector({ name }: { name: string }) {
         }
       />
       <span>Timeslots to offer</span>
+      <Timetable
+        dateRange={{ start: startDate, end: endDate }}
+        setTimeslots={setTimeslots}
+      />
       <input
         type="hidden"
         name="startDateRange"
@@ -37,10 +41,6 @@ export default function DateTimeSelector({ name }: { name: string }) {
       />
       <input type="hidden" name="endDateRange" value={endDate?.toISOString()} />
       <input type="hidden" name={name} value={JSON.stringify(timeslots)} />
-      <Timetable
-        dateRange={{ start: startDate, end: endDate }}
-        setTimeslots={setTimeslots}
-      />
-    </>
+    </div>
   );
 }

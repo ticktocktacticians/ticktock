@@ -36,6 +36,7 @@ export const getAttendeesTimeslotsForEvent = async (request: AttendeesTimeslotsF
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
+          method: "POST",
           body: JSON.stringify(request),
         }
   );

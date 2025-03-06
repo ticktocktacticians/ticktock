@@ -11,7 +11,30 @@ import { MeetingAttendeeAvailabilityAccordion } from "./attendees";
 import { EventDetailCard } from "./eventDetailCard";
 import { Event } from "@/app/public/[meetingId]/page";
 import { Button } from "@/components/ui/button";
+import { ScheduleMeeting } from "../scheduleMeeting";
+import _ from "lodash";
+import { ChevronLeft } from "lucide-react";
 
+/* looks like this: {
+  "name": joel_tan@hive.gov.sg,
+  availabilitiesByDate: {
+    "2025-03-09": [
+        "01:00:00Z",
+        "02:00:00Z",
+        "06:00:00Z"
+    ],
+    "2025-03-11": [
+        "01:00:00Z",
+        "04:00:00Z"
+    ],
+    "2025-03-12": [
+        "02:00:00Z",
+        "06:00:00Z",
+        "07:00:00Z"
+    ]
+  }      
+}
+*/
 export interface MappedAttendeesAvailabilities {
   name: string;
   availabilitiesByDate: Record<string, string[]>;
@@ -100,11 +123,7 @@ export default function CreateMeetingDetailsPage() {
   const [attendeeAvailabilities, setAttendeesAvailabilities] = useState<
     MappedAttendeesAvailabilities[]
   >([]);
-  const router = useRouter();
-
-  const redirectToScheduleMeeting = () => {
-    router.push(`/meeting/${params.meetingId}/schedule`);
-  };
+  const [onClickScheduleMeeting, setOnClickScheduleMeeting] = useState(false);
 
   useEffect(() => {
     if (!params.meetingId) return;
@@ -173,9 +192,17 @@ export default function CreateMeetingDetailsPage() {
     fetchAttendeeEvent();
   }, [event]);
 
+  if (!event) {
+    return (
+      <div>
+        <p className="text-center">Loading event details...</p>
+      </div>
+    );
+  }
+
   return (
     <div className="min-w-[900px] px-4 sm:px-6 lg:px-8">
-      {event ? (
+      {!onClickScheduleMeeting ? (
         <div className="mt-4 flex flex-col">
           <h1 className="text-3xl flex font-bold mb-6">
             Meeting Details - {event.title}
@@ -185,7 +212,21 @@ export default function CreateMeetingDetailsPage() {
             <EventDetailCard event={event} />
 
             <div className="flex flex-col space-y-4">
-              <Button variant="outline" onClick={redirectToScheduleMeeting}>
+              <Button
+                variant="outline"
+                onClick={(e) => {
+                  //FIXME  to update function
+                  attendeeAvailabilities.map((attendee) => {
+                    if (_.isEmpty(attendee.availabilitiesByDate)) {
+                      alert(
+                        `attendee: ${attendee.name} has not submitted their availabilities`
+                      );
+                      e.stopPropagation();
+                    }
+                  });
+                  setOnClickScheduleMeeting(true);
+                }}
+              >
                 Schedule meeting
               </Button>
               <Button variant="outline">Cancel meeting</Button>
@@ -197,7 +238,22 @@ export default function CreateMeetingDetailsPage() {
           />
         </div>
       ) : (
-        "Loading event details..."
+        <div>
+          <div className="flex items-center mt-4 mb-6">
+            <Button
+              variant="ghost"
+              size="default"
+              onClick={() => setOnClickScheduleMeeting(false)}
+              className="flex items-center text-gray-600"
+            >
+              <ChevronLeft className="h-4 w-4 mr-1" />
+              Back
+            </Button>
+          </div>
+
+          <h1 className="text-3xl flex font-bold mb-6">Schedule meeting</h1>
+          <ScheduleMeeting attendeeAvailabilities={attendeeAvailabilities} />
+        </div>
       )}
     </div>
   );

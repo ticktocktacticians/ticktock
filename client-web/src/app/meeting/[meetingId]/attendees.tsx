@@ -1,6 +1,5 @@
 "use client";
 
-import { Event } from "@/app/public/[meetingId]/page";
 import {
   Accordion,
   AccordionContent,
@@ -10,7 +9,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card, CardTitle } from "@/components/ui/card";
 import { Separator } from "@radix-ui/react-separator";
-import { AttendeeAvailability } from "./actions";
 import { formatDate } from "@/app/utils/common";
 import * as _ from "lodash";
 import { MappedAttendeesAvailabilities } from "./page";

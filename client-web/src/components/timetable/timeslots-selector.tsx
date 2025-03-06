@@ -1,8 +1,8 @@
 "use client";
 
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import TimetableRow from "./timetable-row";
-import { TimeslotData, TimetableContext } from "./timetable-context";
+import { SelectedTimeslots, TimeslotData, TimetableContext } from "./timetable-context";
 import { type Dayjs } from "dayjs";
 import { INTERVALS_PER_HOUR } from "./timetable";
 
@@ -26,6 +26,21 @@ export default function TimeslotsSelector({ days, setTimeslots }: TimeslotsSelec
 
   const isTimeslotSelected = (timeslot: TimeslotData | null) =>
     !!(timeslot && selected[timeslot.dayIndex]?.has(timeslot.timeIndex));
+  const updateProcessedTimeslots = (selected: SelectedTimeslots) => {
+    const timeslotISOStrings = Object.keys(selected).reduce((acc, dayIndexStr) => {
+      const dayIndex = parseInt(dayIndexStr);
+      const day = days[dayIndex];
+      if (!day) return acc;
+      selected[dayIndex as unknown as number]?.forEach((timeIndex) => {
+        const hour = 24 * INTERVALS_PER_HOUR / timeIndex;
+        const datetime = day.hour(hour);
+        acc.push(datetime.toISOString());
+      });
+      return acc;
+    }, [] as string[]);
+
+    setTimeslots(timeslotISOStrings);
+  };
   const addCurrentSelection = () => {
     if (!hoveredTimeslot || !startTimeslot || isSelecting === null) return;
 
@@ -53,23 +68,8 @@ export default function TimeslotsSelector({ days, setTimeslots }: TimeslotsSelec
     }
 
     setSelected(selected);
+    updateProcessedTimeslots(selected);
   };
-
-  useEffect(() => {
-    const timeslotISOStrings = Object.keys(selected).reduce((acc, dayIndexStr) => {
-      const dayIndex = parseInt(dayIndexStr);
-      const day = days[dayIndex];
-      if (!day) return acc;
-      selected[dayIndex as unknown as number]?.forEach((timeIndex) => {
-        const hour = 24 * INTERVALS_PER_HOUR / timeIndex;
-        const datetime = day.hour(hour);
-        acc.push(datetime.toISOString());
-      });
-      return acc;
-    }, [] as string[]);
-
-    setTimeslots(timeslotISOStrings);
-  }, [selected]);
 
   return (
     <div

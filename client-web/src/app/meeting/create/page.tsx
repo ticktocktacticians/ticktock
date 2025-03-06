@@ -1,3 +1,5 @@
+"use client"
+
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { createMeeting } from "./actions";
@@ -14,16 +16,22 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import AttendeesInput from "@/components/meeting/attendees-input";
 import Required from "@/components/common/required";
 import DateTimeSelector from "@/components/meeting/date-time-selector";
-import { Button } from "../../../components/ui/button";
+import { Button } from "@/components/ui/button";
+import { type KeyboardEvent } from "react";
 
 const MEETING_DURATION_OPTS = [60, 120, 180, 240];
 
-export default async function CreateMeetingPage() {
+export default function CreateMeetingPage() {
   return (
     <div>
       <h1>Create New Meeting</h1>
 
-      <form action={createMeeting}>
+      <form
+        onKeyDown={(e: KeyboardEvent) =>
+          e.key === "Enter" && e.preventDefault()
+        }
+        action={createMeeting}
+      >
         <Label htmlFor="meetingTitle">
           Meeting Title
           <Required />
@@ -37,7 +45,10 @@ export default async function CreateMeetingPage() {
           Meeting Duration (in minutes)
           <Required />
         </Label>
-        <Select name="meetingDuration">
+        <Select
+          name="meetingDuration"
+          defaultValue={`${MEETING_DURATION_OPTS[0]}`}
+        >
           <SelectTrigger className="w-[80px]" id="meetingDuration">
             <SelectValue placeholder={MEETING_DURATION_OPTS[0]} />
           </SelectTrigger>

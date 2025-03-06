@@ -14,7 +14,7 @@ export interface TimeslotData {
 }
 
 /** Record<dayIndex, timeIndex[]> */
-type SelectedTimeslots = Record<number, Set<number>>;
+export type SelectedTimeslots = Record<number, Set<number>>;
 
 interface TimetableContext {
   selected: SelectedTimeslots;

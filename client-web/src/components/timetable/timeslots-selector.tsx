@@ -1,14 +1,17 @@
 "use client";
 
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import TimetableRow from "./timetable-row";
 import { TimeslotData, TimetableContext } from "./timetable-context";
+import { type Dayjs } from "dayjs";
+import { INTERVALS_PER_HOUR } from "./timetable";
 
 interface TimeslotsSelectorProps {
-  days: string[];
+  days: Dayjs[];
+  setTimeslots: (dates: string[]) => void;
 }
 
-export default function TimeslotsSelector({ days }: TimeslotsSelectorProps) {
+export default function TimeslotsSelector({ days, setTimeslots }: TimeslotsSelectorProps) {
   const {
     selected,
     setSelected,
@@ -51,6 +54,22 @@ export default function TimeslotsSelector({ days }: TimeslotsSelectorProps) {
 
     setSelected(selected);
   };
+
+  useEffect(() => {
+    const timeslotISOStrings = Object.keys(selected).reduce((acc, dayIndexStr) => {
+      const dayIndex = parseInt(dayIndexStr);
+      const day = days[dayIndex];
+      if (!day) return acc;
+      selected[dayIndex as unknown as number]?.forEach((timeIndex) => {
+        const hour = 24 * INTERVALS_PER_HOUR / timeIndex;
+        const datetime = day.hour(hour);
+        acc.push(datetime.toISOString());
+      });
+      return acc;
+    }, [] as string[]);
+
+    setTimeslots(timeslotISOStrings);
+  }, [selected]);
 
   return (
     <div

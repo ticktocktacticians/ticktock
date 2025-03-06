@@ -13,12 +13,7 @@ import (
 func GetUser(env utils.ServerEnv, w http.ResponseWriter, r *http.Request) error {
 	slog.Info("Getting user")
 
-	userContext, err := utils.GetUserContext(r)
-	if err != nil {
-		return err
-	}
-
-	userId, err := utils.GetUserId(userContext)
+	userId, err := utils.GetRequestUserId(r)
 	if err != nil {
 		return err
 	}

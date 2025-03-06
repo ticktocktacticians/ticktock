@@ -14,8 +14,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import AttendeesInput from "@/components/meeting/attendees-input";
 import Required from "@/components/common/required";
 import DateTimeSelector from "@/components/meeting/date-time-selector";
-
-/** @TODO bind additional timeslot args to createMeeting */
+import { Button } from "../../../components/ui/button";
 
 const MEETING_DURATION_OPTS = [60, 120, 180, 240];
 
@@ -38,12 +37,8 @@ export default async function CreateMeetingPage() {
           Meeting Duration (in minutes)
           <Required />
         </Label>
-        <Select>
-          <SelectTrigger
-            className="w-[80px]"
-            id="meetingDuration"
-            name="meetingDuration"
-          >
+        <Select name="meetingDuration">
+          <SelectTrigger className="w-[80px]" id="meetingDuration">
             <SelectValue placeholder={MEETING_DURATION_OPTS[0]} />
           </SelectTrigger>
           <SelectContent>
@@ -74,9 +69,9 @@ export default async function CreateMeetingPage() {
 
         <h2>Who else should be in this meeting?</h2>
 
-        <AttendeesInput />
-
-        <DateTimeSelector />
+        <AttendeesInput name="attendees" />
+        <DateTimeSelector name="timeslots" />
+        <Button type="submit">Next</Button>
       </form>
     </div>
   );

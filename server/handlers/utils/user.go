@@ -31,3 +31,13 @@ func GetUserId(userContext map[string]string) (uuid.UUID, error) {
 
 	return userId, nil
 }
+
+// really just GetUserContext + GetUserId
+func GetRequestUserId(r *http.Request) (uuid.UUID, error) {
+	userContext, err := GetUserContext(r)
+	if err != nil {
+		return uuid.UUID{}, err
+	}
+
+	return GetUserId(userContext)
+}

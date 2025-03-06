@@ -7,7 +7,7 @@ import { useState } from "react";
 import { Button } from "../ui/button";
 import { X } from "lucide-react";
 
-export default function AttendeesInput() {
+export default function AttendeesInput({ name }: { name: string }) {
   const [attendee, setAttendee] = useState<string>("");
   const [attendees, setAttendees] = useState<string[]>([]);
 
@@ -33,7 +33,7 @@ export default function AttendeesInput() {
           }
         }}
       />
-      <input type="hidden" name="attendees" value={JSON.stringify(attendees)} />
+      <input type="hidden" name={name} value={JSON.stringify(attendees)} />
       <div>
         {attendees.map((attendee, index) => (
           <Button key={index} variant="outline" className="pointer-events-none">

@@ -1,6 +1,10 @@
 "use client"
 
-export default function DaysColumn({ days }: { days: string[] }) {
+import { type Dayjs } from "dayjs";
+
+const DATE_FORMAT = "ddd, D MMM YY";
+
+export default function DaysColumn({ days }: { days: Dayjs[] }) {
   return (
     <div className="flex flex-col">
       <div className="box-border w-36 h-10 p-2 text-right">{}</div>
@@ -12,7 +16,7 @@ export default function DaysColumn({ days }: { days: string[] }) {
             key={`day-${day}`}
             className={`w-36 h-10 p-2 text-right border-r border-l border-gray-700 ${border} border-gray-700`}
           >
-            {day}
+            {day.format(DATE_FORMAT)}
           </div>
         );})}
       </div>

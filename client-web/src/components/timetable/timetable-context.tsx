@@ -13,7 +13,7 @@ export interface TimeslotData {
   timeIndex: number;
 }
 
-/** Record<dateIndex, timeIndex[]> */
+/** Record<dayIndex, timeIndex[]> */
 type SelectedTimeslots = Record<number, Set<number>>;
 
 interface TimetableContext {

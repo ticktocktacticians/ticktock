@@ -1,4 +1,4 @@
-import dayjs from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import Axis from "./axis";
 import DaysColumn from "./days-column";
 import { TimetableProvider } from "./timetable-context";
@@ -6,7 +6,6 @@ import TimeslotsSelector from "./timeslots-selector";
 
 /** @TODO enhancement - pagination */
 
-const DATE_FORMAT = "ddd, D MMM YY";
 export const INTERVALS_PER_HOUR = 2;
 export const NUM_TIMESLOTS = INTERVALS_PER_HOUR * 24;
 
@@ -20,6 +19,7 @@ for (let i = START_INTERVAl; i < NUM_TIMESLOTS + START_INTERVAl; i++) INTERVALS.
 
 interface TimeTableProps {
   dateRange: DateRange;
+  setTimeslots: (timeslots: string[]) => void;
 }
 
 export interface DateRange {
@@ -27,7 +27,7 @@ export interface DateRange {
   end: Date|undefined;
 }
 
-export default function Timetable({ dateRange }: TimeTableProps) {
+export default function Timetable({ dateRange, setTimeslots }: TimeTableProps) {
   const startDate = dateRange.start ? dayjs(dateRange.start) : dayjs();
   const endDate = dateRange.end ? dayjs(dateRange.end) : startDate.add(7, "day");
 
@@ -36,10 +36,10 @@ export default function Timetable({ dateRange }: TimeTableProps) {
   const numDays = endDate.diff(startDate, "day");
 
   let currentDay = startDate;
-  let days: string[] = [currentDay.format(DATE_FORMAT)];
+  let days: Dayjs[] = [currentDay];
   for (let i = 0; i < numDays; i++) {
     currentDay = currentDay.add(1, "day");
-    days.push(currentDay.format(DATE_FORMAT));
+    days.push(currentDay);
   }
 
   return (
@@ -48,7 +48,7 @@ export default function Timetable({ dateRange }: TimeTableProps) {
         <DaysColumn days={days} />
         <div className="overflow-x-auto">
           <Axis />
-          <TimeslotsSelector days={days} />
+          <TimeslotsSelector days={days} setTimeslots={setTimeslots} />
         </div>
       </div>
     </TimetableProvider>

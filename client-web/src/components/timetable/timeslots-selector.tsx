@@ -85,9 +85,22 @@ export default function TimeslotsSelector({ days, setTimeslots }: TimeslotsSelec
         setHoveredTimeslot(null);
       }}
     >
-      {days.map((_, dayIndex) => (
-        <TimetableRow key={`time-table-row-${dayIndex}`} dayIndex={dayIndex} />
-      ))}
+      {days.map((_, dayIndex) => {
+
+        const className =
+        dayIndex === 0
+          ? "border-t"
+          : dayIndex === days.length - 1
+          ? "border-b"
+          : "";
+        return (
+          <TimetableRow
+            key={`time-table-row-${dayIndex}`}
+            className={className}
+            dayIndex={dayIndex}
+          />
+        );
+})}
     </div>
   );
 }

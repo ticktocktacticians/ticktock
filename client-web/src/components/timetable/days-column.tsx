@@ -19,7 +19,7 @@ export default function DaysColumn({ days }: { days: Dayjs[] }) {
           return (
             <div
               key={`day-${day}`}
-              className={`w-36 h-10 p-2 text-right border-r border-l border-gray-700 ${border} border-gray-700`}
+              className={`w-36 h-10 p-2 text-right border-r border-l border-b border-slate-900 ${border}`}
             >
               {day.format(DATE_FORMAT)}
             </div>

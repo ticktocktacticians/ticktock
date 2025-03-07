@@ -25,7 +25,7 @@ export default function DateRangeInput({
 
   return (
     <div>
-      <h2 className="text-xl font-bold mb-6">Set dates and times to select from</h2>
+      <h2 className="text-xl font-bold mb-[10px]">Set dates and times to select from</h2>
       <p className="mb-6">
         Between{" "}
         <DatePicker

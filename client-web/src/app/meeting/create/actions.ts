@@ -1,5 +1,6 @@
 "use server";
 
+import { SERVER_URL } from "@/lib/apis/common";
 import { getServerUserSession } from "../../../utils/supabase/server";
 
 export const createMeeting = async (formData: FormData) => {
@@ -22,7 +23,7 @@ export const createMeeting = async (formData: FormData) => {
   };
 
   accessToken &&
-    (await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/auth/event`, {
+    (await fetch(`${SERVER_URL}/auth/event`, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },

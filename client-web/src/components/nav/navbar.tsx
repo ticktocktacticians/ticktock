@@ -18,14 +18,9 @@ export default function Navbar() {
 
     return (
       <NavigationMenu className="fixed top-0 left-0 w-screen max-w-screen py-5 px-7 sm:px-14 [&>*]:w-full">
-        <NavigationMenuList className="justify-between">
+        <NavigationMenuList className="justify-end">
           <NavigationMenuItem>
-            <NavigationMenuLink className="cursor-pointer" href="/">
-              Logo
-            </NavigationMenuLink>
-          </NavigationMenuItem>
-          <NavigationMenuItem>
-            <div className="flex gap-4 justify-center items-center">
+            <div className="flex gap-4 justify-center items-center text-white">
               {process.env.NEXT_PUBLIC_ENABLE_SANDBOX && <SandboxLinks />}
               {!isMobile &&
                 navItems.map((item) => (
@@ -33,7 +28,6 @@ export default function Navbar() {
                     <span>{item.title}</span>
                   </a>
                 ))}
-              <ModeToggle />
               {isMobile && <AppSidebarTrigger />}
               {!isMobile && <ProfileButton />}
             </div>

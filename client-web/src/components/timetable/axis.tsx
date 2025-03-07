@@ -4,7 +4,7 @@ import { INTERVALS, INTERVALS_PER_HOUR, NUM_TIMESLOTS } from "./timetable";
 
 export default function Axis() {
   return (
-    <div className="flex h-6 w-fit justify-between">
+    <div className="flex h-6 w-fit justify-between text-slate-400">
       {INTERVALS.map((label) => {
         let displayLabel: number|null = null;
 

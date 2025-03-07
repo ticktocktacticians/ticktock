@@ -4,9 +4,4 @@ interface NavItem {
     icon?: React.ComponentType;
 }
 
-export const navItems: NavItem[] = [
-    {
-        title: "Home",
-        path: "/",
-    },
-];
+export const navItems: NavItem[] = [];

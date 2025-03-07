@@ -1,3 +1,5 @@
+import { SERVER_URL } from "@/lib/apis/common";
+
 export interface Availability {
 	userId: string;
 	timeslots: { id: number }[];
@@ -5,13 +7,13 @@ export interface Availability {
 
 export const getAttendeeEvent = async (attendeeEventId: string) => {
 	return await fetch(
-		`${process.env.NEXT_PUBLIC_SERVER_URL}/attendee/event/${attendeeEventId}`
+		`${SERVER_URL}/attendee/event/${attendeeEventId}`
 	);
 };
 
 export const createAvailability = async (availability: Availability) => {
 	return await fetch(
-		`${process.env.NEXT_PUBLIC_SERVER_URL}/attendee/availability`,
+		`${SERVER_URL}/attendee/availability`,
 		{
 			method: "POST",
 			headers: {
@@ -24,6 +26,6 @@ export const createAvailability = async (availability: Availability) => {
 
 export const getAttendeeAvailability = async (attendeeEventId: string) => {
 	return await fetch(
-		`${process.env.NEXT_PUBLIC_SERVER_URL}/attendee/availability/${attendeeEventId}`
+		`${SERVER_URL}/attendee/availability/${attendeeEventId}`
 	);
 };

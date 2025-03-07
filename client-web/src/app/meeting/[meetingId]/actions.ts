@@ -1,4 +1,5 @@
 import { getBrowserUserSession } from "@/utils/supabase/client";
+import { SERVER_URL } from "../../../lib/apis/common";
 
 export type AttendeesTimeslotsForEventRequest = {
     attendeeIds: string[];
@@ -16,7 +17,7 @@ export const getEvent = async (eventId: string) => {
       if (!accessToken) return null;
 
     return await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/auth/event/${eventId}`, {
+        `${SERVER_URL}/auth/event/${eventId}`, {
             headers: {
               Authorization: `Bearer ${accessToken}`,
             },
@@ -32,7 +33,7 @@ export const getAttendeesTimeslotsForEvent = async (request: AttendeesTimeslotsF
     if (!accessToken) return null;
 
   return await fetch(
-      `${process.env.NEXT_PUBLIC_SERVER_URL}/auth/event/attendees-timeslots`, {
+      `${SERVER_URL}/auth/event/attendees-timeslots`, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },

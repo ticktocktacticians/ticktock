@@ -16,16 +16,17 @@ export default function AttendeesInput({ name }: { name: string }) {
    * check if this works
    */
   return (
-    <div>
+    <div className="mb-12">
       <Label htmlFor="mandatoryAttendees">
         Mandatory attendees
         <Required />
       </Label>
       <Input
+        className="mt-2"
         value={attendee}
         onChange={(e) => setAttendee(e.target.value)}
         onKeyDown={(e) => {
-          if (e.key === "Enter") {
+          if (e.key === "Enter" || e.key === " ") {
             const attendeesSet = new Set(attendees);
             attendeesSet.add(attendee);
             setAttendees([...attendeesSet]);

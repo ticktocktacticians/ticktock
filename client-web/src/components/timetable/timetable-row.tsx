@@ -4,12 +4,14 @@ import { useContext } from "react";
 import { TimetableContext } from "./timetable-context";
 import { NUM_TIMESLOTS } from "./timetable";
 import { IsWithin } from "../../utils/number";
+import { cn } from "../../lib/utils";
 
 interface TimeTableRowProps {
+  className: string;
   dayIndex: number;
 }
 
-export default function TimetableRow({ dayIndex }: TimeTableRowProps) {
+export default function TimetableRow({ className, dayIndex }: TimeTableRowProps) {
   const {
     selected,
     isSelecting,
@@ -46,7 +48,7 @@ export default function TimetableRow({ dayIndex }: TimeTableRowProps) {
       />
     );
   }
-  return <div className="flex">{...timeslots}</div>;
+  return <div className={cn(["flex"])}>{...timeslots}</div>;
 }
 
 function TimeSlot({
@@ -59,7 +61,7 @@ function TimeSlot({
   return (
     <div
       onMouseEnter={onMouseEnter}
-      className={`border border-gray-400 w-4 h-10 flex-shrink-0 ${
+      className={`border border-slate-200 w-4 h-10 flex-shrink-0 ${
         isSelected ? "bg-blue-400" : ""
       }`}
     ></div>

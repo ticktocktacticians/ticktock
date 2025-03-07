@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 import { getServerClient, getServerUserSession } from "@/utils/supabase/server";
+import { SERVER_URL } from "../lib/apis/common";
 
 export async function login(formData: FormData) {
 	const supabase = await getServerClient();
@@ -54,7 +55,7 @@ export async function loginWithOAuth() {
 	const { data, error } = await supabase.auth.signInWithOAuth({
 		provider: "google",
 		options: {
-			redirectTo: `${process.env.NEXT_PUBLIC_SERVER_URL}/auth/callback`,
+			redirectTo: `${SERVER_URL}/auth/callback`,
 		},
 	});
 
@@ -86,7 +87,7 @@ export const createUser = async (formData: FormData) => {
 	}
 
 	accessToken &&
-		(await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/auth/user`, {
+		(await fetch(`${SERVER_URL}/auth/user`, {
 			headers: {
 				Authorization: `Bearer ${accessToken}`,
 			},

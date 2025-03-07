@@ -1,4 +1,5 @@
 import { getBrowserUserSession } from "@/utils/supabase/client";
+import { SERVER_URL } from "./common";
 
 export interface GetUserResponse {
   id: string;
@@ -12,7 +13,7 @@ export const getUser = async (): Promise<GetUserResponse | null> => {
   if (!accessToken) return null;
 
   return (
-    await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/auth/user`, {
+    await fetch(`${SERVER_URL}/auth/user`, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },

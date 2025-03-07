@@ -22,7 +22,7 @@ export const createMeeting = async (formData: FormData) => {
   };
 
   accessToken &&
-    (await fetch("http://localhost:8080/auth/event", {
+    (await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/auth/event`, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },

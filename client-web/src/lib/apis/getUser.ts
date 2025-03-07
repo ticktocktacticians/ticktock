@@ -12,7 +12,7 @@ export const getUser = async (): Promise<GetUserResponse | null> => {
   if (!accessToken) return null;
 
   return (
-    await fetch("http://localhost:8080/auth/user", {
+    await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/auth/user`, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },

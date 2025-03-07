@@ -213,6 +213,7 @@ export default function CreateMeetingDetailsPage() {
 
             <div className="flex flex-col space-y-4">
               <Button
+              className="text-indigo-600"
                 variant="outline"
                 onClick={(e) => {
                   //FIXME  to update function

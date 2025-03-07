@@ -122,6 +122,7 @@ func main() {
 	authMux.Handle("GET /event/{id}", handlersUtils.Handler{Env: env, H: handlers.GetEventDetails})
 	authMux.Handle("POST /event", handlersUtils.Handler{Env: env, H: handlers.CreateEvent})
 	authMux.Handle("POST /event/attendees-timeslots", handlersUtils.Handler{Env: env, H: handlers.GetAttendeesTimeslotsForEvent})
+	authMux.Handle("POST /event/booking", handlersUtils.Handler{Env: env, H: handlers.CreateBooking})
 
 	mux := http.NewServeMux()
 	mux.Handle("/attendee/", attendeeMux)

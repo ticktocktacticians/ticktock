@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { ConfirmationModal } from "./confirmation";
 import { Event } from "@/app/public/[meetingId]/page";
+import { createBooking } from "./actions";
 
 export const ScheduleMeeting = ({
   attendeeAvailabilities,
@@ -123,10 +124,17 @@ export const ScheduleMeeting = ({
     attendees: extendedAttendees,
   } as Event;
 
-  const handleConfirmBooking = (timeslot: string) => {
-    alert("Sending email notification to attendees on meeting confirmation");
-    console.log("Confirmed booking for:", timeslot);
-    setIsDialogOpen(false);
+  const handleConfirmBooking = async (timeslot: string) => {
+    try {
+      setIsDialogOpen(false);
+      await createBooking({
+        startDateTime: timeslot,
+        eventId: event.id.toString(),
+      });
+      alert("Booking created successfully!");
+    } catch (e) {
+      console.log("Error creating booking", e);
+    }
   };
 
   return toWorkWith ? (

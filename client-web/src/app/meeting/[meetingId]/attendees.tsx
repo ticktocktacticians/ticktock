@@ -33,7 +33,7 @@ export const MeetingAttendeeAvailabilityAccordion = ({
                 {dayAndTimeslots[1].map((timeslot) => (
                   <Card
                     key={timeslot}
-                    className="flex justify-center max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow-sm hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700"
+                    className="flex justify-center max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700 "
                   >
                     <CardTitle key={timeslot}>{timeslot.slice(0, 5)}</CardTitle>
                   </Card>
@@ -66,6 +66,7 @@ export const MeetingAttendeeAvailabilityAccordion = ({
               </AccordionTrigger>
               <div className="flex space-x-4 pr-3">
                 <Button
+                  className="hover:bg-transparent cursor-default"
                   variant="outline"
                   size="sm"
                   onClick={(e) => {

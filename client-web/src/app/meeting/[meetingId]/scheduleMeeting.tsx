@@ -40,6 +40,7 @@ export const ScheduleMeeting = ({
     return temp;
   }
 
+  // For MVP we only use common date times across all attendees
   function findCommonDateTimes(attendees: MappedAttendeesAvailabilities[]): {
     [date: string]: string[];
   } {
@@ -58,7 +59,7 @@ export const ScheduleMeeting = ({
     allDates.forEach((date) => {
       // Check if every attendee has the date in their availability
       const allAttendeesHaveDate = attendees.every(
-        (attendee) => attendee.availabilitiesByDate[date]!.length > 0
+        (attendee) => (attendee.availabilitiesByDate[date] ?? []).length > 0
       );
 
       // Skip dates where some attendees have no availability

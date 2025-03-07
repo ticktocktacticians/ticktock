@@ -51,7 +51,7 @@ export interface Schedule {
 	};
 }
 
-export function convertTimeslotsToSchedule(timeslots: Timeslot[]): Schedule {
+function convertTimeslotsToSchedule(timeslots: Timeslot[]): Schedule {
 	const schedule: Schedule = {};
 
 	// Sort timeslots by startDateTime in ascending order

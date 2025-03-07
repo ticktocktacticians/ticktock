@@ -18,15 +18,20 @@ import (
 )
 
 func main() {
+	// Check if we are running on Render (or another cloud provider)
+	isRender := os.Getenv("RENDER") != ""
 
-	dotenvPath := os.Getenv("DOTENV_PATH")
-	if dotenvPath == "" {
-		dotenvPath = "./env"
-	}
+	// Load environment variables from .env file if running locally (not on Render)
+	if !isRender {
+		dotenvPath := os.Getenv("DOTENV_PATH")
+		if dotenvPath == "" {
+			dotenvPath = "./env"
+		}
 
-	err := godotenv.Load(dotenvPath)
-	if err != nil {
-		log.Fatal("Error loading .env file")
+		err := godotenv.Load(dotenvPath)
+		if err != nil {
+			log.Fatal("Error loading .env file")
+		}
 	}
 
 	// init auth provider

@@ -2,7 +2,11 @@
 
 import { useContext } from "react";
 import TimetableRow from "./timetable-row";
-import { SelectedTimeslots, TimeslotData, TimetableContext } from "./timetable-context";
+import {
+  SelectedTimeslots,
+  TimeslotData,
+  TimetableContext,
+} from "./timetable-context";
 import { type Dayjs } from "dayjs";
 import { INTERVALS_PER_HOUR } from "./timetable";
 
@@ -11,7 +15,10 @@ interface TimeslotsSelectorProps {
   setTimeslots: (dates: string[]) => void;
 }
 
-export default function TimeslotsSelector({ days, setTimeslots }: TimeslotsSelectorProps) {
+export default function TimeslotsSelector({
+  days,
+  setTimeslots,
+}: TimeslotsSelectorProps) {
   const {
     selected,
     setSelected,
@@ -27,17 +34,20 @@ export default function TimeslotsSelector({ days, setTimeslots }: TimeslotsSelec
   const isTimeslotSelected = (timeslot: TimeslotData | null) =>
     !!(timeslot && selected[timeslot.dayIndex]?.has(timeslot.timeIndex));
   const updateProcessedTimeslots = (selected: SelectedTimeslots) => {
-    const timeslotISOStrings = Object.keys(selected).reduce((acc, dayIndexStr) => {
-      const dayIndex = parseInt(dayIndexStr);
-      const day = days[dayIndex];
-      if (!day) return acc;
-      selected[dayIndex as unknown as number]?.forEach((timeIndex) => {
-        const hour = 24 * INTERVALS_PER_HOUR / timeIndex;
-        const datetime = day.hour(hour);
-        acc.push(datetime.toISOString());
-      });
-      return acc;
-    }, [] as string[]);
+    const timeslotISOStrings = Object.keys(selected).reduce(
+      (acc, dayIndexStr) => {
+        const dayIndex = parseInt(dayIndexStr);
+        const day = days[dayIndex];
+        if (!day) return acc;
+        selected[dayIndex as unknown as number]?.forEach((timeIndex) => {
+          const hour = (24 * INTERVALS_PER_HOUR) / timeIndex;
+          const datetime = day.hour(hour);
+          acc.push(datetime.toISOString());
+        });
+        return acc;
+      },
+      [] as string[]
+    );
 
     setTimeslots(timeslotISOStrings);
   };
@@ -86,13 +96,12 @@ export default function TimeslotsSelector({ days, setTimeslots }: TimeslotsSelec
       }}
     >
       {days.map((_, dayIndex) => {
-
         const className =
-        dayIndex === 0
-          ? "border-t"
-          : dayIndex === days.length - 1
-          ? "border-b"
-          : "";
+          dayIndex === 0
+            ? "border-t"
+            : dayIndex === days.length - 1
+            ? "border-b"
+            : "";
         return (
           <TimetableRow
             key={`time-table-row-${dayIndex}`}
@@ -100,7 +109,7 @@ export default function TimeslotsSelector({ days, setTimeslots }: TimeslotsSelec
             dayIndex={dayIndex}
           />
         );
-})}
+      })}
     </div>
   );
 }

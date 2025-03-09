@@ -15,7 +15,8 @@ const START_INTERVAl = 7.5 * INTERVALS_PER_HOUR; // i.e. 7.30am
  * e.g. 0 represents midnight,
  * and assuming 2 intervals per hour, 15 represents 7:30am */
 export const INTERVALS: number[] = [];
-for (let i = START_INTERVAl; i < NUM_TIMESLOTS + START_INTERVAl; i++) INTERVALS.push(i);
+for (let i = START_INTERVAl; i < NUM_TIMESLOTS + START_INTERVAl; i++)
+  INTERVALS.push(i);
 
 interface TimeTableProps {
   dateRange: DateRange;
@@ -23,13 +24,15 @@ interface TimeTableProps {
 }
 
 export interface DateRange {
-  start: Date|undefined;
-  end: Date|undefined;
+  start: Date | undefined;
+  end: Date | undefined;
 }
 
 export default function Timetable({ dateRange, setTimeslots }: TimeTableProps) {
   const startDate = dateRange.start ? dayjs(dateRange.start) : dayjs();
-  const endDate = dateRange.end ? dayjs(dateRange.end) : startDate.add(7, "day");
+  const endDate = dateRange.end
+    ? dayjs(dateRange.end)
+    : startDate.add(7, "day");
 
   if (startDate > endDate) return <div>Invalid dateRange</div>;
 
@@ -44,12 +47,13 @@ export default function Timetable({ dateRange, setTimeslots }: TimeTableProps) {
 
   return (
     <TimetableProvider>
-      <div className="w-[600px] flex overflow-y-auto">
+      <div className="w-[600px] flex overflow-y-auto relative">
         <DaysColumn days={days} />
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto relative">
           <Axis />
           <TimeslotsSelector days={days} setTimeslots={setTimeslots} />
         </div>
+        <div className="absolute top-6 bottom-0 right-0 w-[1px] bg-slate-900 pointer-events-none" />
       </div>
     </TimetableProvider>
   );

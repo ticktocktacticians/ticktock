@@ -1,7 +1,8 @@
 "use client";
 
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useContext } from "react";
 import DatePicker from "./date-picker";
+import { CreateMeetingContext } from "@/app/meeting/create/context";
 
 interface DateRangeInputProps {
   startDate?: Date;
@@ -23,9 +24,15 @@ export default function DateRangeInput({
   const disabledEndDates = (date: Date | undefined) =>
     !!(date && startDate && date < startDate);
 
+  const { reviewing } = useContext(CreateMeetingContext);
+
   return (
     <div>
-      <h2 className="text-xl text-indigo-600 font-bold mb-[10px]">Set dates and times to select from</h2>
+      <h2 className="text-xl text-indigo-600 font-semibold mb-[10px]">
+        {reviewing
+          ? "Dates and times offered"
+          : "Set dates and times to select from"}
+      </h2>
       <p className="mb-6">
         Between{" "}
         <DatePicker

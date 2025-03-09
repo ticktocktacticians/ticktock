@@ -17,13 +17,14 @@ import AttendeesInput from "@/components/meeting/attendees-input";
 import Required from "@/components/common/required";
 import DateTimeSelector from "@/components/meeting/date-time-selector";
 import { Button } from "@/components/ui/button";
-import { useState, type KeyboardEvent } from "react";
+import { useContext, type KeyboardEvent } from "react";
 import EmailPreview from "@/components/meeting/email-preview";
+import { CreateMeetingContext } from "./context";
 
 const MEETING_DURATION_OPTS = [60, 120, 180, 240];
 
 export default function CreateMeetingPage() {
-  const [reviewing, setReviewing] = useState(false);
+  const { reviewing, setReviewing } = useContext(CreateMeetingContext);
 
   return (
     <div className="flex flex-col justify-center items-center">
@@ -34,8 +35,8 @@ export default function CreateMeetingPage() {
         action={createMeeting}
         className="flex flex-col max-w-[540px]"
       >
-        <h2 className="text-3xl text-indigo-600 w-full text-left font-bold mb-8">
-          Create New Meeting
+        <h2 className="text-3xl text-indigo-600 w-full text-left font-semibold mb-8">
+          {reviewing ? "Review new meeting details" : "Create New Meeting"}
         </h2>
 
         <div className="mb-4">
@@ -96,8 +97,8 @@ export default function CreateMeetingPage() {
           </RadioGroup>
         </div>
 
-        <h2 className="text-xl text-indigo-600 font-bold mb-4">
-          Who else should be in this meeting?
+        <h2 className="text-xl text-indigo-600 font-semibold mb-4">
+          {reviewing ? "Your attendees" : "Who else should be in this meeting?"}
         </h2>
 
         <AttendeesInput name="attendees" />
@@ -115,8 +116,8 @@ export default function CreateMeetingPage() {
         {reviewing && (
           <>
             <EmailPreview />
-            <div className="flex justify-between items-center mt-20">
-              <Button onClick={() => setReviewing(false)}>Back</Button>
+            <div className="flex justify-between items-center mt-[72px]">
+              <Button variant="outline" className="w-[139px]" onClick={() => setReviewing(false)}>Back</Button>
               <Button type="submit" className="w-[139px] bg-indigo-600">
                 Send requests
               </Button>

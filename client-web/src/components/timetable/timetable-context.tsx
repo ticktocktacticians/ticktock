@@ -28,6 +28,9 @@ interface TimetableContext {
   setStartTimeslot: Dispatch<SetStateAction<TimeslotData | null>>;
   hoveredTimeslot: TimeslotData | null;
   setHoveredTimeslot: Dispatch<SetStateAction<TimeslotData | null>>;
+
+  page: number;
+  setPage: (page: number) => void;
 }
 
 export const TimetableContext = createContext<TimetableContext>({
@@ -40,6 +43,9 @@ export const TimetableContext = createContext<TimetableContext>({
   setStartTimeslot:() => {},
   hoveredTimeslot: null,
   setHoveredTimeslot: () => {},
+
+  page: 1,
+  setPage: () => {},
 });
 
 export const TimetableProvider = ({ children }: PropsWithChildren) => {
@@ -52,6 +58,7 @@ export const TimetableProvider = ({ children }: PropsWithChildren) => {
   const [hoveredTimeslot, setHoveredTimeslot] = useState<TimeslotData | null>(
     null
   );
+  const [page, setPage] = useState<number>(1);
 
   return (
     <TimetableContext.Provider
@@ -66,6 +73,9 @@ export const TimetableProvider = ({ children }: PropsWithChildren) => {
         setStartTimeslot,
         hoveredTimeslot,
         setHoveredTimeslot,
+
+        page,
+        setPage,
       }}
     >
       {children}

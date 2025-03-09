@@ -7,11 +7,10 @@ import { IsWithin } from "../../utils/number";
 import { cn } from "../../lib/utils";
 
 interface TimeTableRowProps {
-  className: string;
   dayIndex: number;
 }
 
-export default function TimetableRow({ className, dayIndex }: TimeTableRowProps) {
+export default function TimetableRow({ dayIndex }: TimeTableRowProps) {
   const {
     selected,
     isSelecting,
@@ -45,25 +44,39 @@ export default function TimetableRow({ className, dayIndex }: TimeTableRowProps)
         isSelected={isSelected}
         key={`timeslot-${dayIndex}-${timeIndex}`}
         onMouseEnter={onMouseEnter}
+        index={dayIndex}
       />
     );
   }
-  return <div className={cn(["flex"])}>{...timeslots}</div>;
+  return (
+    <div
+      className={cn([
+        "relative flex h-11"
+      ])}
+    >
+      {...timeslots}
+    </div>
+  );
 }
 
 function TimeSlot({
   isSelected,
   onMouseEnter,
+  index,
 }: {
   isSelected: boolean;
   onMouseEnter: () => void;
+  index: number;
 }) {
   return (
     <div
       onMouseEnter={onMouseEnter}
-      className={`border border-slate-200 w-4 h-10 flex-shrink-0 ${
-        isSelected ? "bg-blue-400" : ""
-      }`}
+      className={cn([
+        "border-x-[0.5px] border-x-slate-200 w-4 h-11 flex-shrink-0",
+        isSelected && "bg-blue-400",
+        "border-b border-y-slate-900",
+        index === 0 && "border-t",
+      ])}
     ></div>
   );
 }

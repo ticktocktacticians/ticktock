@@ -3,6 +3,7 @@ import Axis from "./axis";
 import DaysColumn from "./days-column";
 import { TimetableProvider } from "./timetable-context";
 import TimeslotsSelector from "./timeslots-selector";
+import TimetablePaginator from "./timetable-paginator";
 
 /** @TODO enhancement - pagination */
 
@@ -47,14 +48,15 @@ export default function Timetable({ dateRange, setTimeslots }: TimeTableProps) {
 
   return (
     <TimetableProvider>
-      <div className="w-[600px] flex overflow-y-auto relative">
+      <div className="w-full flex overflow-y-auto relative">
         <DaysColumn days={days} />
         <div className="overflow-x-auto relative">
           <Axis />
           <TimeslotsSelector days={days} setTimeslots={setTimeslots} />
         </div>
-        <div className="absolute top-6 bottom-0 right-0 w-[1px] bg-slate-900 pointer-events-none" />
+        <div className="absolute top-6 bottom-0 right-0 border-r-[0.5px] border-r-slate-900 pointer-events-none" />
       </div>
+      <TimetablePaginator max={days.length} />
     </TimetableProvider>
   );
 }

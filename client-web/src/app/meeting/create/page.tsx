@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -17,11 +17,14 @@ import AttendeesInput from "@/components/meeting/attendees-input";
 import Required from "@/components/common/required";
 import DateTimeSelector from "@/components/meeting/date-time-selector";
 import { Button } from "@/components/ui/button";
-import { type KeyboardEvent } from "react";
+import { useState, type KeyboardEvent } from "react";
+import EmailPreview from "@/components/meeting/email-preview";
 
 const MEETING_DURATION_OPTS = [60, 120, 180, 240];
 
 export default function CreateMeetingPage() {
+  const [reviewing, setReviewing] = useState(false);
+
   return (
     <div className="flex flex-col justify-center items-center">
       <form
@@ -29,11 +32,11 @@ export default function CreateMeetingPage() {
           e.key === "Enter" && e.preventDefault()
         }
         action={createMeeting}
-        className="flex flex-col max-w-[600px]"
+        className="flex flex-col max-w-[540px]"
       >
-        <h1 className="text-3xl w-full text-left font-bold mb-8">
+        <h2 className="text-3xl text-indigo-600 w-full text-left font-bold mb-8">
           Create New Meeting
-        </h1>
+        </h2>
 
         <div className="mb-4">
           <Label htmlFor="meetingTitle">
@@ -77,29 +80,49 @@ export default function CreateMeetingPage() {
             Meeting Format
             <Required />
           </Label>
-          <RadioGroup name="meetingFormat" defaultValue="virtual" className="mt-2">
+          <RadioGroup
+            name="meetingFormat"
+            defaultValue="VIRTUAL"
+            className="mt-2"
+          >
             <div className="flex items-center space-x-2">
-              <RadioGroupItem value="virtual" id="format-1" />
+              <RadioGroupItem value="VIRTUAL" id="format-1" />
               <Label htmlFor="format-1">Virtual</Label>
             </div>
             <div className="flex items-center space-x-2">
-              <RadioGroupItem value="in-person" id="format-2" />
+              <RadioGroupItem value="PHYSICAL" id="format-2" />
               <Label htmlFor="format-2">In-Person</Label>
             </div>
           </RadioGroup>
         </div>
 
-        <h2 className="text-xl font-bold mb-4">
+        <h2 className="text-xl text-indigo-600 font-bold mb-4">
           Who else should be in this meeting?
         </h2>
 
         <AttendeesInput name="attendees" />
         <DateTimeSelector name="timeslots" />
-        <div className="flex justify-center items-center">
-          <Button type="submit" className="max-w-[300px]">
-            Next
-          </Button>
-        </div>
+        {!reviewing && (
+          <div className="flex justify-end items-center mt-20">
+            <Button
+              className="w-[139px] bg-indigo-600"
+              onClick={() => setReviewing(true)}
+            >
+              Next
+            </Button>
+          </div>
+        )}
+        {reviewing && (
+          <>
+            <EmailPreview />
+            <div className="flex justify-between items-center mt-20">
+              <Button onClick={() => setReviewing(false)}>Back</Button>
+              <Button type="submit" className="w-[139px] bg-indigo-600">
+                Send requests
+              </Button>
+            </div>
+          </>
+        )}
       </form>
     </div>
   );

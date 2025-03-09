@@ -1,6 +1,6 @@
 "use client";
 
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import TimetableRow from "./timetable-row";
 import {
   SelectedTimeslots,
@@ -29,6 +29,8 @@ export default function TimeslotsSelector({
     setStartTimeslot,
     hoveredTimeslot,
     setHoveredTimeslot,
+
+    page,
   } = useContext(TimetableContext);
 
   const isTimeslotSelected = (timeslot: TimeslotData | null) =>
@@ -81,6 +83,8 @@ export default function TimeslotsSelector({
     updateProcessedTimeslots(selected);
   };
 
+  const daysToShow = days.slice((page - 1) * 5, page * 5);
+
   return (
     <div
       // if timeslot is already selected, then you are DESELECTING it (and vice versa)
@@ -95,17 +99,10 @@ export default function TimeslotsSelector({
         setHoveredTimeslot(null);
       }}
     >
-      {days.map((_, dayIndex) => {
-        const className =
-          dayIndex === 0
-            ? "border-t"
-            : dayIndex === days.length - 1
-            ? "border-b"
-            : "";
+      {daysToShow.map((_, dayIndex) => {
         return (
           <TimetableRow
             key={`time-table-row-${dayIndex}`}
-            className={className}
             dayIndex={dayIndex}
           />
         );

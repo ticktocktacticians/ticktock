@@ -3,13 +3,15 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Required from "@/components/common/required";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Button } from "../ui/button";
 import { X } from "lucide-react";
+import { CreateMeetingContext } from "../../app/meeting/create/context";
 
-export default function AttendeesInput({ name }: { name: string }) {
+export default function AttendeesInput({ name }: { name: string; }) {
   const [attendee, setAttendee] = useState<string>("");
   const [attendees, setAttendees] = useState<string[]>([]);
+  const { reviewing } = useContext(CreateMeetingContext);
 
   /**
    * @TODO attendees stringified into formdata to be sent to server
@@ -33,6 +35,7 @@ export default function AttendeesInput({ name }: { name: string }) {
             setAttendee("");
           }
         }}
+        disabled={reviewing}
       />
       <div>
         {attendees.map((attendee, index) => (
@@ -40,6 +43,7 @@ export default function AttendeesInput({ name }: { name: string }) {
             key={index}
             variant="outline"
             className="pointer-events-none mr-2 mt-3"
+            disabled={reviewing}
           >
             {attendee}
             <span

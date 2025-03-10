@@ -20,11 +20,12 @@ import { Button } from "@/components/ui/button";
 import { useContext, type KeyboardEvent } from "react";
 import EmailPreview from "@/components/meeting/email-preview";
 import { CreateMeetingContext } from "./context";
+import { cn } from "../../../lib/utils";
 
 const MEETING_DURATION_OPTS = [60, 120, 180, 240];
 
 export default function CreateMeetingPage() {
-  const { reviewing, setReviewing } = useContext(CreateMeetingContext);
+  const { reviewing, setReviewing, setMeetingTitle, setMeetingDuration, setMeetingDesc } = useContext(CreateMeetingContext);
 
   return (
     <div className="flex flex-col justify-center items-center">
@@ -33,7 +34,7 @@ export default function CreateMeetingPage() {
           e.key === "Enter" && e.preventDefault()
         }
         action={createMeeting}
-        className="flex flex-col max-w-[540px]"
+        className={cn(["flex flex-col max-w-[540px]", reviewing && "text-slate-400"])}
       >
         <h2 className="text-3xl text-indigo-600 w-full text-left font-semibold mb-8">
           {reviewing ? "Review new meeting details" : "Create New Meeting"}
@@ -44,12 +45,24 @@ export default function CreateMeetingPage() {
             Meeting Title
             <Required />
           </Label>
-          <Input id="meetingTitle" name="meetingTitle" className="mt-2" />
+          <Input
+            id="meetingTitle"
+            name="meetingTitle"
+            onChange={(e) => setMeetingTitle(e.target.value)}
+            className="mt-2"
+            disabled={reviewing}
+          />
         </div>
 
         <div className="mb-4">
           <Label htmlFor="meetingDesc">Meeting Description (if any)</Label>
-          <Textarea id="meetingDesc" name="meetingDesc" className="mt-2" />
+          <Textarea
+            id="meetingDesc"
+            name="meetingDesc"
+            onChange={(e) => setMeetingDesc(e.target.value)}
+            className="mt-2"
+            disabled={reviewing}
+          />
         </div>
 
         <div className="mb-4">
@@ -60,8 +73,13 @@ export default function CreateMeetingPage() {
           <Select
             name="meetingDuration"
             defaultValue={`${MEETING_DURATION_OPTS[0]}`}
+            onValueChange={(v) => setMeetingDuration(v)}
           >
-            <SelectTrigger className="w-[80px] mt-2" id="meetingDuration">
+            <SelectTrigger
+              className="w-[80px] mt-2"
+              id="meetingDuration"
+              disabled={reviewing}
+            >
               <SelectValue placeholder={MEETING_DURATION_OPTS[0]} />
             </SelectTrigger>
             <SelectContent>
@@ -76,7 +94,7 @@ export default function CreateMeetingPage() {
           </Select>
         </div>
 
-        <div className="mb-12">
+        <div className="mb-4">
           <Label htmlFor="meetingFormat">
             Meeting Format
             <Required />
@@ -85,6 +103,7 @@ export default function CreateMeetingPage() {
             name="meetingFormat"
             defaultValue="VIRTUAL"
             className="mt-2"
+            disabled={reviewing}
           >
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="VIRTUAL" id="format-1" />
@@ -95,6 +114,14 @@ export default function CreateMeetingPage() {
               <Label htmlFor="format-2">In-Person</Label>
             </div>
           </RadioGroup>
+        </div>
+
+        <div className="mb-12">
+          <Label htmlFor="meetingLocation">
+            Meeting Location
+            <Required />
+          </Label>
+          <Input id="meetingLocation" name="meetingLocation" className="mt-2" />
         </div>
 
         <h2 className="text-xl text-indigo-600 font-semibold mb-4">
@@ -117,7 +144,13 @@ export default function CreateMeetingPage() {
           <>
             <EmailPreview />
             <div className="flex justify-between items-center mt-[72px]">
-              <Button variant="outline" className="w-[139px]" onClick={() => setReviewing(false)}>Back</Button>
+              <Button
+                variant="outline"
+                className="w-[139px]"
+                onClick={() => setReviewing(false)}
+              >
+                Back
+              </Button>
               <Button type="submit" className="w-[139px] bg-indigo-600">
                 Send requests
               </Button>

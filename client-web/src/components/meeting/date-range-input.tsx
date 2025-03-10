@@ -38,13 +38,15 @@ export default function DateRangeInput({
         <DatePicker
           date={startDate}
           setDate={setStartDate}
-          disabled={disabledStartDates}
+          disabled={reviewing}
+          disabledDates={disabledStartDates}
         />{" "}
         and{" "}
         <DatePicker
           date={endDate}
           setDate={setEndDate}
-          disabled={disabledEndDates}
+          disabled={reviewing}
+          disabledDates={disabledEndDates}
         />
       </p>
     </div>

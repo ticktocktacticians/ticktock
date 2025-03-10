@@ -5,7 +5,7 @@ import DateRangeInput from "@/components/meeting/date-range-input";
 import { useEffect, useState } from "react";
 import dayjs from "dayjs";
 
-export default function DateTimeSelector({ name }: { name: string }) {
+export default function DateTimeSelector({ name }: { name: string; }) {
   const now = new Date();
 
   const [startDate, setStartDate] = useState<Date>(now);
@@ -20,7 +20,7 @@ export default function DateTimeSelector({ name }: { name: string }) {
   }, [startDate]);
 
   return (
-    <div>
+    <div className="text-gray-900">
       <DateRangeInput
         startDate={startDate}
         endDate={endDate}

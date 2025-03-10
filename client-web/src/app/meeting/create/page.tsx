@@ -17,15 +17,23 @@ import AttendeesInput from "@/components/meeting/attendees-input";
 import Required from "@/components/common/required";
 import DateTimeSelector from "@/components/meeting/date-time-selector";
 import { Button } from "@/components/ui/button";
-import { useContext, type KeyboardEvent } from "react";
+import { useContext, useState, type KeyboardEvent } from "react";
 import EmailPreview from "@/components/meeting/email-preview";
 import { CreateMeetingContext } from "./context";
 import { cn } from "../../../lib/utils";
+import SentDialog from "../../../components/meeting/sent-dialog";
 
 const MEETING_DURATION_OPTS = [60, 120, 180, 240];
 
 export default function CreateMeetingPage() {
-  const { reviewing, setReviewing, setMeetingTitle, setMeetingDuration, setMeetingDesc } = useContext(CreateMeetingContext);
+  const {
+    reviewing,
+    setReviewing,
+    setMeetingTitle,
+    setMeetingDuration,
+    setMeetingDesc,
+  } = useContext(CreateMeetingContext);
+  const [sentDialogOpen, setSentDialogOpen] = useState(false);
 
   return (
     <div className="flex flex-col justify-center items-center">
@@ -151,12 +159,13 @@ export default function CreateMeetingPage() {
               >
                 Back
               </Button>
-              <Button type="submit" className="w-[139px] bg-indigo-600">
+              <Button type="submit" onClick={() => setSentDialogOpen(true)} className="w-[139px] bg-indigo-600">
                 Send requests
               </Button>
             </div>
           </>
         )}
+        <SentDialog open={sentDialogOpen} setOpen={setSentDialogOpen} />
       </form>
     </div>
   );

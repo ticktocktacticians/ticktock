@@ -14,7 +14,7 @@ export default function DaysColumn({ days }: { days: Dayjs[] }) {
 
   return (
     <div className="flex flex-col">
-      <div className="box-border w-[138px] h-6 p-2 text-right" />
+      <div className="box-border w-[138px] h-10 p-2 text-right" />
       <div className="box-border">
         {daysToShow.map((day, index) => (
           <div

@@ -54,7 +54,7 @@ export default function Timetable({ dateRange, setTimeslots }: TimeTableProps) {
           <Axis />
           <TimeslotsSelector days={days} setTimeslots={setTimeslots} />
         </div>
-        <div className="absolute top-6 bottom-0 right-0 border-r-[0.5px] border-r-slate-900 pointer-events-none" />
+        <div className="absolute top-10 bottom-0 right-0 border-r-[0.5px] border-r-slate-900 pointer-events-none" />
       </div>
       <TimetablePaginator max={days.length} />
     </TimetableProvider>

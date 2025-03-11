@@ -1,24 +1,35 @@
 "use client";
 
-import { useContext } from "react";
-import { CreateMeetingContext } from "../../app/meeting/create/context";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { useGetUser } from "../../lib/queries/user";
 
+export interface EmailPreviewProps {
+  confirmationPage: boolean;
+  meetingOwnerEmail: string;
+  meetingTitle: string;
+  meetingDuration: string;
+  meetingDesc?: string;
+}
 /** @todo */
-export default function EmailPreview() {
-  const { meetingTitle, meetingDuration, meetingDesc } =
-    useContext(CreateMeetingContext);
+export default function EmailPreview(emailPreviewProps: EmailPreviewProps) {
+
+  const {
+    meetingTitle,
+    meetingDuration,
+    meetingDesc,
+    confirmationPage,
+    meetingOwnerEmail,
+  } = emailPreviewProps;
 
   const { data: user } = useGetUser();
 
   return (
     <div className="mt-12 text-gray-900">
       <h4 className="text-xl text-indigo-600 font-semibold">
-        Preview of request email
+        Preview of {confirmationPage ? "confirmation" : "request"} email
       </h4>
-      <div className="mt-4 px-4 py-6 border border-slate-300 w-[541px] h-[436px] text-xs leading-5">
-        <span className="text-sm">{`Input your availabilities for ‘${meetingTitle}’`}</span>
+      <div className="mt-4 px-4 py-6 border border-slate-300 w-[541px] text-xs leading-5">
+        <span className="text-sm">{confirmationPage ? "Meeting scheduled" : "Input your availabilities for"} - { meetingTitle } </span>
         <hr className="my-3" />
         <div className="mb-6 flex gap-3">
           <Avatar>
@@ -38,10 +49,12 @@ export default function EmailPreview() {
             </p>
           </div>
         </div>
-        {"Dear <Name>,"}
+        {"Dear Attendee,"}
         <br />
         <br />
-        You are invited to provide your availability for the following:
+        {confirmationPage
+          ? "Thank you for submitting your availability in time! Please refer to the meeting details below: "
+          : "You are invited to provide your availability for the following: "}
         <br />
         <br />
         <span className="text-slate-400">Meeting Title: </span>
@@ -56,20 +69,19 @@ export default function EmailPreview() {
         <span>{meetingDesc}</span>
         <br />
         <br />
-        Please kindly click on this link to select/ provide your available
-        timeslots:
-        <br />
-        <span className="underline text-blue-500">
-          https://go.gov.sg/Un1queL!nk4everyAttendee
-        </span>
-        <br />
-        <br />
-        For queries, please contact{" "}
-        <span className="font-bold italic">Christy Yeo</span> at{" "}
-        <span className="font-bold italic">+65 8123 4567</span>.
-        <br />
-        <br />
-        Thank you!
+        {confirmationPage ? (
+          ""
+        ) : (
+          <div>
+            Please kindly click on this link to select/ provide your available
+            timeslots:
+            <br />
+            <span className="underline text-blue-500">
+              https://go.gov.sg/Un1queL!nk4everyAttendee
+            </span>
+          </div>
+        )}
+        For queries, please contact: <b>{meetingOwnerEmail}</b>.
       </div>
     </div>
   );

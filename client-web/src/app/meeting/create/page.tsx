@@ -18,10 +18,11 @@ import Required from "@/components/common/required";
 import DateTimeSelector from "@/components/meeting/date-time-selector";
 import { Button } from "@/components/ui/button";
 import { useContext, useState, type KeyboardEvent } from "react";
-import EmailPreview from "@/components/meeting/email-preview";
+import EmailPreview, { EmailPreviewProps } from "@/components/meeting/email-preview";
 import { CreateMeetingContext } from "./context";
 import { cn } from "../../../lib/utils";
 import SentDialog from "../../../components/meeting/sent-dialog";
+import { useGetUser } from "@/lib/queries/user";
 
 const MEETING_DURATION_OPTS = [60, 120, 180, 240];
 
@@ -29,11 +30,24 @@ export default function CreateMeetingPage() {
   const {
     reviewing,
     setReviewing,
+    meetingTitle,
     setMeetingTitle,
+    meetingDesc,
     setMeetingDuration,
+    meetingDuration,
     setMeetingDesc,
   } = useContext(CreateMeetingContext);
+    const { data: user } = useGetUser();
+  
   const [sentDialogOpen, setSentDialogOpen] = useState(false);
+
+  const emailPreviewProps: EmailPreviewProps = {
+    confirmationPage: false,
+    meetingOwnerEmail: user?.email ?? "",
+    meetingTitle,
+    meetingDuration,
+    meetingDesc,
+  };
 
   return (
     <div className="flex flex-col justify-center items-center">
@@ -150,7 +164,7 @@ export default function CreateMeetingPage() {
         )}
         {reviewing && (
           <>
-            <EmailPreview />
+            <EmailPreview {...emailPreviewProps}/>
             <div className="flex justify-between items-center mt-[72px]">
               <Button
                 variant="outline"

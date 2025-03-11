@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -8,8 +10,10 @@ import {
 } from "@/components/ui/dialog";
 import { Calendar, Clock, MapPin } from "lucide-react";
 import { addMinutesToTime, formatDate } from "@/app/utils/common";
-import { Separator } from "@radix-ui/react-separator";
+import { Separator } from "@/components/ui/separator";
 import { Event } from "@/app/public/[meetingId]/page";
+import EmailPreview, { EmailPreviewProps } from "@/components/meeting/email-preview";
+import { Suspense } from "react";
 
 interface BookingDialogProps {
   isOpen: boolean;
@@ -26,16 +30,29 @@ export function ConfirmationModal({
   event,
   onConfirm,
 }: BookingDialogProps) {
+
+  const emailPreviewProps: EmailPreviewProps = {
+    meetingDuration: event.duration.toString(),
+    meetingTitle: event.title,
+    meetingDesc: event.description ?? "desc",
+    confirmationPage: true,
+    meetingOwnerEmail: event.creator.email ?? "email",
+  }
+
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[600px] overflow-hidden">
         <DialogHeader>
-          <DialogTitle>Confirm Booking</DialogTitle>
-          <Separator className="border-b border-slate-400 pb-1" />
+          <DialogTitle className="text-indigo-600 text-2xl">
+            Confirm Booking
+          </DialogTitle>
+          <Separator className="border-slate-400 pb-1" />
         </DialogHeader>
         {selectedTimeslot && (
-          <div>
-            <h1 className="text-2xl font-semibold mb-4">{event.title}</h1>
+          <div className="space-y-4 overflow-y-auto max-h-[80vh]">
+            <h1 className="text-xl text-indigo-600 font-semibold mb-4">
+              {event.title}
+            </h1>
             <div className="py-2">
               <div className="flex items-center gap-2 mb-2">
                 <Calendar className="h-4 w-4" />
@@ -60,7 +77,9 @@ export function ConfirmationModal({
                 </span>
               </div>
             </div>
-            <h1 className="text-2xl font-semibold pt-5 mb-4"> Attendees </h1>
+            <h1 className="text-indigo-600 text-xl font-semibold pt-5 mb-4">
+              Attendees
+            </h1>
             <div className="border rounded-md">
               <div className="h-[200px] overflow-y-auto pr-1">
                 <div className="p-4">
@@ -85,6 +104,9 @@ export function ConfirmationModal({
                 </div>
               </div>
             </div>
+            <Suspense fallback={<div>Loading Email preview...</div>}>
+                  <EmailPreview {...emailPreviewProps} />
+            </Suspense>
           </div>
         )}
 
@@ -94,7 +116,9 @@ export function ConfirmationModal({
           </Button>
           <Button
             className="bg-indigo-600 text-white"
-            onClick={() => selectedTimeslot && onConfirm(event, selectedTimeslot)}
+            onClick={() =>
+              selectedTimeslot && onConfirm(event, selectedTimeslot)
+            }
           >
             Confirm
           </Button>

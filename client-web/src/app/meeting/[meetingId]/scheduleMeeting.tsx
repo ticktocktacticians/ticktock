@@ -30,7 +30,7 @@ export const ScheduleMeeting = ({
   ): MappedAttendeesAvailabilities[] {
     const temp: MappedAttendeesAvailabilities[] = [];
     let store: Record<string, string[]> = {};
-    for (const [key, value] of Object.entries(attendeeAvailabilities)) {
+    for (const [, value] of Object.entries(attendeeAvailabilities)) {
       if (value.name === "edwin.lim@gt.tech.gov.sg" && !_.isEmpty(store)) {
         temp.push({ name: value.name, availabilitiesByDate: store });
       } else {
@@ -80,7 +80,7 @@ export const ScheduleMeeting = ({
 
       // Filter for time slots available for all attendees
       const commonTimes = Array.from(timeSlotCounts.entries())
-        .filter(([_, count]) => count === attendees.length)
+        .filter(([, count]) => count === attendees.length)
         .map(([time]) => time)
         .sort(); // Sort times chronologically
 

@@ -23,7 +23,7 @@ export interface Event {
 	creatorId: string;
 	startDateRange: string;
 	endDateRange: string;
-	createor: {
+	creator: {
 		id: string;
 		email: string;
 		alias: string;

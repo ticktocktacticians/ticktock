@@ -45,8 +45,10 @@ func main() {
 	dbPort := os.Getenv("PGPORT")
 
 	db, err := gorm.Open(postgres.New(postgres.Config{
-		DSN:                  fmt.Sprintf("postgres://%s:%s@%s:%s/%s", dbUser, dbPass, dbHost, dbPort, dbName),
-		PreferSimpleProtocol: true, // disables implicit prepared statement usage
+		DSN: fmt.Sprintf(
+			"host=%s user=%s password=%s dbname=%s port=%s TimeZone=Asia/Singapore",
+			dbHost, dbUser, dbPass, dbName, dbPort,
+		), PreferSimpleProtocol: true, // disables implicit prepared statement usage
 	}), &gorm.Config{})
 	if err != nil {
 		log.Fatal("Error connecting to DB")

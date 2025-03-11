@@ -11,6 +11,7 @@ import {
 } from "./actions";
 import dayjs from "dayjs";
 import _ from "lodash";
+import { User } from "@supabase/supabase-js";
 
 export interface Event {
 	id: number;
@@ -49,6 +50,15 @@ export interface Schedule {
 		title: string;
 		timeslot: { time: string; id: number }[];
 	};
+}
+
+type UserModel = Partial<User> & {alias: string}
+export interface Booking{
+	id: number;
+	startDateTime: string;
+	endDateTime: string;
+	timeslotId: number;
+	attendees: UserModel[];
 }
 
 function convertTimeslotsToSchedule(timeslots: Timeslot[]): Schedule {

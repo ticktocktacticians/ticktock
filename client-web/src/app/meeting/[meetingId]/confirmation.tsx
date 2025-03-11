@@ -14,9 +14,9 @@ import { Event } from "@/app/public/[meetingId]/page";
 interface BookingDialogProps {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
-  selectedTimeslot: string | null;
+  selectedTimeslot: string;
+  onConfirm: (event: Event, timeslot: string) => void;
   event: Event;
-  onConfirm: (timeslot: string) => void;
 }
 
 export function ConfirmationModal({
@@ -94,7 +94,7 @@ export function ConfirmationModal({
           </Button>
           <Button
             className="bg-indigo-600 text-white"
-            onClick={() => selectedTimeslot && onConfirm(selectedTimeslot)}
+            onClick={() => selectedTimeslot && onConfirm(event, selectedTimeslot)}
           >
             Confirm
           </Button>

@@ -1,6 +1,4 @@
 import { getBrowserUserSession } from "@/utils/supabase/client";
-import { SERVER_URL } from "../../../lib/apis/common";
-
 export interface AttendeesTimeslotsForEventRequest {
   attendeeIds: string[];
   eventId: string;
@@ -14,6 +12,12 @@ export interface AttendeeAvailability {
 export interface CreateBookingRequest {
   startDateTime: string;
   eventId: string;
+}
+
+// we determine meeting creator in the BE via auth 
+export interface SendNotificationRequest {
+  eventId: string
+  bookingId: string
 }
 
 export const getEvent = async (eventId: string) => {
@@ -68,3 +72,20 @@ export const createBooking = async (request: CreateBookingRequest) => {
     }
   );
 };
+
+export const sendNotification = async (sendNotificationRequest: SendNotificationRequest) => {
+  const accessToken = (await getBrowserUserSession())?.access_token;
+
+  if (!accessToken) return null;
+
+  return await fetch(
+    `${process.env.NEXT_PUBLIC_SERVER_URL}/auth/send-notification`,
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+      method: "POST",
+      body: JSON.stringify(sendNotificationRequest),
+    }
+  );
+}

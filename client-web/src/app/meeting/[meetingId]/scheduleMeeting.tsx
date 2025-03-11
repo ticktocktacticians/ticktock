@@ -11,8 +11,8 @@ import { Calendar, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { ConfirmationModal } from "./confirmation";
-import { Event } from "@/app/public/[meetingId]/page";
-import { createBooking } from "./actions";
+import { Booking, Event } from "@/app/public/[meetingId]/page";
+import { createBooking, sendNotification } from "./actions";
 
 export const ScheduleMeeting = ({
   attendeeAvailabilities,
@@ -22,7 +22,7 @@ export const ScheduleMeeting = ({
   event: Event;
 }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [selectedTimeslot, setSelectedTimeslot] = useState<string | null>(null);
+  const [selectedTimeslot, setSelectedTimeslot] = useState<string>("");
 
   //NOTE  temp function to duplicate attendee availabilities
   function duplicateTimeslots(
@@ -124,14 +124,29 @@ export const ScheduleMeeting = ({
     attendees: extendedAttendees,
   } as Event;
 
-  const handleConfirmBooking = async (timeslot: string) => {
+  const handleConfirmBooking = async (
+    event: Event,
+    selectedTimeslot: string
+  ) => {
     try {
       setIsDialogOpen(false);
-      await createBooking({
-        startDateTime: timeslot,
+      // assume that all event attendees will attend the event
+      const response = await createBooking({
+        startDateTime: selectedTimeslot,
         eventId: event.id.toString(),
       });
-      alert("Booking created successfully!");
+      const createdBooking = (await response?.json()) as Booking;
+
+      if (createdBooking.id) {
+        alert("Booking created successfully!");
+        await sendNotification({
+          eventId: event.id.toString(),
+          bookingId: createdBooking.id.toString(),
+        });
+        alert("Email notification sent out to attendees!");
+      } else {
+        throw new Error("Created Booking has no id");
+      }
     } catch (e) {
       console.log("Error creating booking", e);
     }
@@ -175,7 +190,6 @@ export const ScheduleMeeting = ({
                   e.stopPropagation();
                   setSelectedTimeslot(commonDateTimeslot);
                   setIsDialogOpen(true);
-                  console.log("Book slot clicked");
                 }}
               >
                 Book this slot
@@ -191,7 +205,6 @@ export const ScheduleMeeting = ({
           </AccordionItem>
         ))}
       </Accordion>
-      {/* Using the separate dialog component */}
       <ConfirmationModal
         isOpen={isDialogOpen}
         onOpenChange={setIsDialogOpen}

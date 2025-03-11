@@ -47,7 +47,7 @@ func CreateBooking(env utils.ServerEnv, w http.ResponseWriter, r *http.Request) 
 
 	timeslot := models.Timeslot{
 		StartDateTime: startDateTime,
-		EndDateTime:   startDateTime.Add(time.Duration(eventModel.Duration)),
+		EndDateTime:   startDateTime.Add(time.Duration(eventModel.Duration) * time.Minute),
 		EventID:       eventModel.ID,
 	}
 
@@ -61,6 +61,8 @@ func CreateBooking(env utils.ServerEnv, w http.ResponseWriter, r *http.Request) 
 	// create booking with timeslot id
 	booking := models.Booking{
 		TimeslotID: timeslot.ID,
+		// only for MVP where all attendees will need to accept the timeslot
+		Attendees: eventModel.Attendees,
 	}
 	bookingCreated := db.Create(&booking)
 
@@ -70,5 +72,14 @@ func CreateBooking(env utils.ServerEnv, w http.ResponseWriter, r *http.Request) 
 
 	slog.Info("Successfully created booking = ", booking)
 
+	// get the booking and return in response. currently just needed for the booking id
+	createdBooking := models.Booking{}
+	bookingResult := env.GetDB().First(&createdBooking, booking.ID)
+	if bookingResult.RowsAffected == 0 {
+		slog.Warn(fmt.Sprintf("Booking not found: %s", booking.ID))
+		return utils.StatusError{Code: 404, Err: errors.New("failed to get booking")}
+	}
+
+	utils.JSONResponse(w, createdBooking)
 	return nil
 }

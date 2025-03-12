@@ -6,7 +6,9 @@ import (
 	"fmt"
 	"log/slog"
 	"net/http"
+	"os"
 	"server/handlers/utils"
+	"server/helper"
 	"server/models"
 	"server/models/enumtypes"
 	"slices"
@@ -37,9 +39,19 @@ func CreateEvent(env utils.ServerEnv, w http.ResponseWriter, r *http.Request) er
 		return utils.StatusError{Code: 400, Err: err}
 	}
 
-	userId, err := utils.GetRequestUserId(r)
+	userContext, err := utils.GetUserContext(r)
 	if err != nil {
 		return utils.StatusError{Code: 403, Err: err}
+	}
+
+	userId, err := utils.GetUserId(userContext)
+	if err != nil {
+		return utils.StatusError{Code: 403, Err: err}
+	}
+
+	creatorEmail := userContext["email"]
+	if creatorEmail == "" {
+		return utils.StatusError{Code: 400, Err: errors.New("empty user alias or email")}
 	}
 
 	startDateRange, err := time.Parse(time.RFC3339, payload.StartDateRange)
@@ -87,6 +99,12 @@ func CreateEvent(env utils.ServerEnv, w http.ResponseWriter, r *http.Request) er
 	}
 
 	slog.Info(fmt.Sprintf("Event with title '%s' created!", event.Title))
+
+	err = sendInviteEmails(event, creatorEmail)
+	if err != nil {
+		return utils.StatusError{Code: 500, Err: err}
+	}
+
 	utils.JSONResponse(w, event)
 	return nil
 }
@@ -151,4 +169,124 @@ func createTimeslots(db *gorm.DB, event models.Event, timeslotStr []string) erro
 		return result.Error
 	}
 	return nil
+}
+
+func getAttendeeUniqueHash(eventId uint, userEmail string) string {
+	// Encode meeting hash
+	meeting := fmt.Sprintf("%s;%d", userEmail, eventId)
+	return helper.EncodeBase64(meeting)
+}
+
+func sendInviteEmails(event models.Event, creatorEmail string) error {
+
+	// Map User array to just emails
+	for _, attendee := range *event.Attendees {
+		attendeeEmail := attendee.Email
+		slog.Info(fmt.Sprintf("Sending invite to: %s", attendeeEmail))
+
+		emailPayload := make(map[string]any)
+		// schedulr will send email on behalf of meeting organiser replace meeting owner's email with booking.gov.sg domain
+		emailPayload["from"] = "schedulr@booking.gov.sg"
+		emailPayload["to"] = []string{attendeeEmail}
+		emailPayload["subject"] = "(Test) Meeting Scheduled - " + event.Title
+		emailPayload["html"] = bindEmailConfirmationBody(event, attendeeEmail, creatorEmail)
+
+		utils.SendEmail(emailPayload)
+
+		slog.Info(fmt.Sprintf("Sent invite email to: %s", attendeeEmail))
+	}
+
+	return nil
+}
+
+func bindEmailConfirmationBody(event models.Event, attendeeEmail string, creatorEmail string) string {
+	var eventDescription string
+	if event.Description == nil {
+		eventDescription = ""
+	} else {
+		eventDescription = *event.Description
+	}
+
+	uniqueHash := getAttendeeUniqueHash(event.ID, attendeeEmail)
+	clientUrl := os.Getenv("CLIENT_URL")
+	uniqueLink := fmt.Sprintf("%s/public/%s", clientUrl, uniqueHash)
+
+	return `
+	<!DOCTYPE html>
+	<html>
+
+	<head>
+		<style>
+			body {
+				font-family: Arial, sans-serif;
+				line-height: 1.6;
+				color: #333;
+			}
+
+			.container {
+				max-width: 600px;
+				margin: 0 auto;
+				padding: 20px;
+			}
+
+			.header {
+				background-color: #f8f9fa;
+				padding: 20px;
+				border-radius: 5px;
+				margin-bottom: 20px;
+			}
+
+			.details {
+				margin-bottom: 20px;
+			}
+
+			.footer {
+				font-size: 12px;
+				color: #666;
+				border-top: 1px solid #eee;
+				padding-top: 20px;
+				margin-top: 20px;
+			}
+
+			.param {
+				color: #94A3B8;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="container">
+			<div class="header">
+				<h2 style="color: #3949AB;"> Schedulr </h2>
+			</div>
+			<span style="color: #0F172A; font-size: 20px; font-weight: 500;">Input your availabilities for ‘Discussion for Next
+				Quarter’</span>
+			<hr style="margin-top: 16px; margin-bottom: 16px;" />
+			<div class="details">
+				<p>Dear invitee, </p>
+				<p>You are invited to provide your availability for the following: </p>
+				<p>
+					<span class="param">Meeting Title:</span> <strong>` + event.Title + `</strong>
+					<br />
+					<span class="param">Meeting duration:</span> ` + fmt.Sprintf("%d", event.Duration) + `
+					<br />
+					<span class="param">Meeting description (if applicable):</span> ` + eventDescription + `
+					<br />
+				</p>
+				<p>Please kindly click on this link to select/ provide your available timeslots:<br /><a href="` +
+		uniqueLink +
+		`">` + uniqueLink + `</a></p>
+				<p>For queries, please contact <strong><em>Christy Yeo</em></strong> at <strong><em>+65 8123 4567</em></strong>.
+				</p>
+				<p>Thank you!</p>
+			</div>
+			<div class="footer">
+				<p>Should you have any questions, please contact the meeting coordinator at ` + creatorEmail + `.</p>
+			</div>
+		</div>
+	</body>
+
+	</html>
+
+			`
 }

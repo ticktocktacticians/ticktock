@@ -23,6 +23,7 @@ func GetAttendeeEvent(env utils.ServerEnv, w http.ResponseWriter, r *http.Reques
 
 	slog.Info(attendeeEvent)
 	// Decode meeting hash
+	// expecting meeting to be "userEmail;eventId"
 	meeting, err := helper.DecodeBase64(attendeeEvent)
 	if err != nil {
 		http.Error(w, "Invalid meeting", http.StatusBadRequest)

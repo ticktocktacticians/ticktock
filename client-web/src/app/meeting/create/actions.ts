@@ -22,12 +22,13 @@ export const createMeeting = async (formData: FormData) => {
     endDateRange: formData.get("endDateRange"),
   };
 
+  const url = `${SERVER_URL}/auth/event`;
   accessToken &&
-    (await fetch(`${SERVER_URL}/auth/event`, {
+    (await fetch(url, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
       method: "POST",
       body: JSON.stringify(body),
-    }));
+    }).catch((err) => console.error(`${url} call error: `, err)));
 };

@@ -6,12 +6,9 @@ import (
 	"fmt"
 	"log/slog"
 	"net/http"
-	"os"
 	"server/handlers/utils"
 	"server/helper"
 	"server/models"
-
-	"gopkg.in/gomail.v2"
 )
 
 // we need the booking id to be passed in request because theres no way to get
@@ -64,36 +61,7 @@ func SendNotification(env utils.ServerEnv, w http.ResponseWriter, r *http.Reques
 		return utils.StatusError{Code: 400, Err: err}
 	}
 
-	// Gmail SMTP settings
-	smtpServer := os.Getenv("SMTP_SERVER")
-	email := os.Getenv("SMTP_EMAIL")
-	password := os.Getenv("SMTP_PASSWORD")
-
-	if smtpServer == "" || email == "" || password == "" {
-		return utils.StatusError{
-			Code: 500,
-			Err:  errors.New("missing SMTP configuration"),
-		}
-	}
-
-	// Create email message
-	m := gomail.NewMessage()
-	m.SetHeader("From", "schedulr@booking.gov.sg")
-	m.SetHeader("To", emailPayload["to"].([]string)...)
-	m.SetHeader("Subject", emailPayload["subject"].(string))
-	m.SetBody("text/html", emailPayload["html"].(string))
-
-	slog.Info("Attempting to send email to:", emailPayload["to"])
-
-	// Configure SMTP dialer
-	d := gomail.NewDialer(smtpServer, 587, email, password)
-
-	if err := d.DialAndSend(m); err != nil {
-		return utils.StatusError{
-			Code: 500,
-			Err:  fmt.Errorf("failed to send email: %v", err),
-		}
-	}
+	utils.SendEmail(emailPayload)
 
 	slog.Info("Email notification sent successfully")
 	return nil

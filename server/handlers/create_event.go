@@ -259,8 +259,7 @@ func bindEmailConfirmationBody(event models.Event, attendeeEmail string, creator
 			<div class="header">
 				<h2 style="color: #3949AB;"> Schedulr </h2>
 			</div>
-			<span style="color: #0F172A; font-size: 20px; font-weight: 500;">Input your availabilities for ‘Discussion for Next
-				Quarter’</span>
+			<span style="color: #0F172A; font-size: 20px; font-weight: 500;">Input your availabilities for ‘` + event.Title + `’</span>
 			<hr style="margin-top: 16px; margin-bottom: 16px;" />
 			<div class="details">
 				<p>Dear invitee, </p>

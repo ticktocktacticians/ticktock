@@ -22,10 +22,11 @@ import EmailPreview, {
   EmailPreviewProps,
 } from "@/components/meeting/email-preview";
 import { CreateMeetingContext } from "./context";
-import { cn } from "../../../lib/utils";
-import SentDialog from "../../../components/meeting/sent-dialog";
+import { cn } from "@/lib/utils";
+import SentDialog from "@/components/meeting/sent-dialog";
 import { useGetUser } from "@/lib/queries/user";
 import { validate } from "./validations";
+import FormErrorMsg from "@/components/common/form-error-msg";
 
 const MEETING_DURATION_OPTS = [60, 120, 180, 240];
 
@@ -226,7 +227,3 @@ export default function CreateMeetingPage() {
     </div>
   );
 }
-
-export const FormErrorMsg = ({ msg }: { msg?: string }) => (
-  <span className="text-red-700 mt-2 text-xs">{msg}</span>
-);

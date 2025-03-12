@@ -8,7 +8,7 @@ import { Button } from "../ui/button";
 import { X } from "lucide-react";
 import { CreateMeetingContext } from "../../app/meeting/create/context";
 import { cn } from "../../lib/utils";
-import { FormErrorMsg } from "../../app/meeting/create/page";
+import FormErrorMsg from "../common/form-error-msg";
 
 export default function AttendeesInput({ name }: { name: string; }) {
   const [attendee, setAttendee] = useState<string>("");

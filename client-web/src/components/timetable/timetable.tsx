@@ -7,7 +7,7 @@ import TimetablePaginator from "./timetable-paginator";
 import { useContext } from "react";
 import { CreateMeetingContext } from "../../app/meeting/create/context";
 import { cn } from "../../lib/utils";
-import { FormErrorMsg } from "../../app/meeting/create/page";
+import FormErrorMsg from "../common/form-error-msg";
 
 /** @TODO enhancement - pagination */
 

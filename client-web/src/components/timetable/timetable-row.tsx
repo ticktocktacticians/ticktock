@@ -5,6 +5,7 @@ import { TimetableContext } from "./timetable-context";
 import { NUM_TIMESLOTS } from "./timetable";
 import { IsWithin } from "../../utils/number";
 import { cn } from "../../lib/utils";
+import { CreateMeetingContext } from "../../app/meeting/create/context";
 
 interface TimeTableRowProps {
   dayIndex: number;
@@ -68,6 +69,7 @@ function TimeSlot({
   onMouseEnter: () => void;
   index: number;
 }) {
+  const { reviewing } = useContext(CreateMeetingContext);
   return (
     <div
       onMouseEnter={onMouseEnter}
@@ -76,6 +78,7 @@ function TimeSlot({
         isSelected && "bg-blue-400",
         "border-b border-y-slate-900",
         index === 0 && "border-t",
+        reviewing && isSelected && 'bg-zinc-400',
       ])}
     ></div>
   );

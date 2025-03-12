@@ -9,6 +9,7 @@ import {
 } from "./timetable-context";
 import { type Dayjs } from "dayjs";
 import { INTERVALS_PER_HOUR } from "./timetable";
+import { CreateMeetingContext } from "../../app/meeting/create/context";
 
 interface TimeslotsSelectorProps {
   days: Dayjs[];
@@ -32,6 +33,7 @@ export default function TimeslotsSelector({
 
     page,
   } = useContext(TimetableContext);
+    const { reviewing } = useContext(CreateMeetingContext);
 
   const isTimeslotSelected = (timeslot: TimeslotData | null) =>
     !!(timeslot && selected[timeslot.dayIndex]?.has(timeslot.timeIndex));
@@ -98,6 +100,7 @@ export default function TimeslotsSelector({
         setStartTimeslot(null);
         setHoveredTimeslot(null);
       }}
+      className={ reviewing ? "pointer-events-none no-select" : ""}
     >
       {daysToShow.map((_, dayIndex) => {
         return (

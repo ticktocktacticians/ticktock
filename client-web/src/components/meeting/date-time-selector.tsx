@@ -2,11 +2,13 @@
 
 import Timetable from "@/components/timetable/timetable";
 import DateRangeInput from "@/components/meeting/date-range-input";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import dayjs from "dayjs";
+import { CreateMeetingContext } from "@/app/meeting/create/context";
 
 export default function DateTimeSelector({ name }: { name: string; }) {
   const now = new Date();
+  const { formData, setFormData } = useContext(CreateMeetingContext);
 
   const [startDate, setStartDate] = useState<Date>(now);
   const [endDate, setEndDate] = useState<Date>(
@@ -18,6 +20,14 @@ export default function DateTimeSelector({ name }: { name: string; }) {
   useEffect(() => {
     startDate > endDate && setEndDate(startDate);
   }, [startDate]);
+
+  useEffect(() => {
+    setFormData({ ...formData, startDate, endDate });
+  }, [startDate, endDate])
+
+  useEffect(() => {
+    setFormData({ ...formData, timeslots });
+  }, [timeslots.length])
 
   return (
     <div className="text-gray-900">

@@ -69,7 +69,7 @@ function TimeSlot({
   onMouseEnter: () => void;
   index: number;
 }) {
-  const { reviewing } = useContext(CreateMeetingContext);
+  const { reviewing, errors } = useContext(CreateMeetingContext);
   return (
     <div
       onMouseEnter={onMouseEnter}
@@ -78,6 +78,7 @@ function TimeSlot({
         isSelected && "bg-blue-400",
         "border-b border-y-slate-900",
         index === 0 && "border-t",
+        index === 0 && errors.timeslots && "border-t-red-700",
         reviewing && isSelected && 'bg-zinc-400',
       ])}
     ></div>

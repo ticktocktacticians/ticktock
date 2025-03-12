@@ -4,6 +4,10 @@ import DaysColumn from "./days-column";
 import { TimetableProvider } from "./timetable-context";
 import TimeslotsSelector from "./timeslots-selector";
 import TimetablePaginator from "./timetable-paginator";
+import { useContext } from "react";
+import { CreateMeetingContext } from "../../app/meeting/create/context";
+import { cn } from "../../lib/utils";
+import { FormErrorMsg } from "../../app/meeting/create/page";
 
 /** @TODO enhancement - pagination */
 
@@ -30,6 +34,7 @@ export interface DateRange {
 }
 
 export default function Timetable({ dateRange, setTimeslots }: TimeTableProps) {
+  const { errors } = useContext(CreateMeetingContext);
   const startDate = dateRange.start ? dayjs(dateRange.start) : dayjs();
   const endDate = dateRange.end
     ? dayjs(dateRange.end)
@@ -54,9 +59,17 @@ export default function Timetable({ dateRange, setTimeslots }: TimeTableProps) {
           <Axis />
           <TimeslotsSelector days={days} setTimeslots={setTimeslots} />
         </div>
-        <div className="absolute top-10 bottom-0 right-0 border-r-[0.5px] border-r-slate-900 pointer-events-none" />
+        <div
+          className={cn([
+            "absolute top-10 bottom-0 right-0 border-r-[0.5px] border-r-slate-900 pointer-events-none",
+            errors.timeslots && "border-r-red-700",
+          ])}
+        />
       </div>
       <TimetablePaginator max={days.length} />
+      {errors.timeslots && (
+        <FormErrorMsg msg="Please select your time slots. Click and drag across the grid to select." />
+      )}
     </TimetableProvider>
   );
 }

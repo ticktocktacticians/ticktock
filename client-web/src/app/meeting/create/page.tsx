@@ -25,20 +25,13 @@ import { CreateMeetingContext } from "./context";
 import { cn } from "../../../lib/utils";
 import SentDialog from "../../../components/meeting/sent-dialog";
 import { useGetUser } from "@/lib/queries/user";
+import { validate } from "./validations";
 
 const MEETING_DURATION_OPTS = [60, 120, 180, 240];
 
 export default function CreateMeetingPage() {
-  const {
-    reviewing,
-    setReviewing,
-    meetingTitle,
-    setMeetingTitle,
-    meetingDesc,
-    setMeetingDuration,
-    meetingDuration,
-    setMeetingDesc,
-  } = useContext(CreateMeetingContext);
+  const { reviewing, setReviewing, formData, setFormData, errors, setErrors } =
+    useContext(CreateMeetingContext);
   const { data: user } = useGetUser();
 
   const [sentDialogOpen, setSentDialogOpen] = useState(false);
@@ -47,9 +40,9 @@ export default function CreateMeetingPage() {
   const emailPreviewProps: EmailPreviewProps = {
     confirmationPage: false,
     meetingOwnerEmail: user?.email ?? "",
-    meetingTitle,
-    meetingDuration,
-    meetingDesc,
+    meetingTitle: formData.meetingTitle,
+    meetingDuration: formData.meetingDuration,
+    meetingDesc: formData.meetingDesc,
   };
 
   return (
@@ -76,11 +69,20 @@ export default function CreateMeetingPage() {
           <Input
             id="meetingTitle"
             name="meetingTitle"
-            onChange={(e) => setMeetingTitle(e.target.value)}
-            className="mt-2"
+            onChange={(e) =>
+              setFormData({ ...formData, meetingTitle: e.target.value })
+            }
+            className={cn(["mt-2", errors.meetingTitle && "border-red-700"])}
             disabled={reviewing}
           />
-          <input type="hidden" name="meetingTitle" value={meetingTitle} />
+          {errors.meetingTitle?.length && (
+            <FormErrorMsg msg={errors.meetingTitle[0]} />
+          )}
+          <input
+            type="hidden"
+            name="meetingTitle"
+            value={formData.meetingTitle}
+          />
         </div>
 
         <div className="mb-4">
@@ -88,11 +90,20 @@ export default function CreateMeetingPage() {
           <Textarea
             id="meetingDesc"
             name="meetingDesc"
-            onChange={(e) => setMeetingDesc(e.target.value)}
-            className="mt-2"
+            onChange={(e) =>
+              setFormData({ ...formData, meetingDesc: e.target.value })
+            }
+            className={cn(["mt-2", errors.meetingDesc && "border-red-700"])}
             disabled={reviewing}
           />
-          <input type="hidden" name="meetingDesc" value={meetingDesc} />
+          {errors.meetingDesc?.length && (
+            <FormErrorMsg msg={errors.meetingDesc[0]} />
+          )}
+          <input
+            type="hidden"
+            name="meetingDesc"
+            value={formData.meetingDesc}
+          />
         </div>
 
         <div className="mb-4">
@@ -103,7 +114,9 @@ export default function CreateMeetingPage() {
           <Select
             name="meetingDuration"
             defaultValue={`${MEETING_DURATION_OPTS[0]}`}
-            onValueChange={(v) => setMeetingDuration(v)}
+            onValueChange={(v) =>
+              setFormData({ ...formData, meetingDuration: v })
+            }
           >
             <SelectTrigger
               className="w-[80px] mt-2"
@@ -148,11 +161,19 @@ export default function CreateMeetingPage() {
         </div>
 
         <div className="mb-12">
-          <Label htmlFor="meetingLocation">
+          <Label
+            htmlFor="meetingLocation"
+            className={meetingFormat === "VIRTUAL" ? "text-slate-400" : ""}
+          >
             Meeting Location
             <Required />
           </Label>
-          <Input id="meetingLocation" name="meetingLocation" className="mt-2" />
+          <Input
+            id="meetingLocation"
+            name="meetingLocation"
+            className="mt-2"
+            disabled={reviewing || meetingFormat === "VIRTUAL"}
+          />
         </div>
 
         <h2 className="text-xl text-indigo-600 font-semibold mb-4">
@@ -165,7 +186,15 @@ export default function CreateMeetingPage() {
           <div className="flex justify-end items-center mt-20">
             <Button
               className="w-[139px] bg-indigo-600"
-              onClick={() => setReviewing(true)}
+              onClick={() => {
+                const results = validate(formData);
+                if (results.success) {
+                  setErrors({});
+                  return setReviewing(true);
+                }
+                const errors = results.error.flatten().fieldErrors;
+                setErrors(errors);
+              }}
             >
               Next
             </Button>
@@ -197,3 +226,7 @@ export default function CreateMeetingPage() {
     </div>
   );
 }
+
+export const FormErrorMsg = ({ msg }: { msg?: string }) => (
+  <span className="text-red-700 mt-2 text-xs">{msg}</span>
+);

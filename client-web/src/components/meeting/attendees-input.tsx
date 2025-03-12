@@ -3,20 +3,22 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Required from "@/components/common/required";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import { X } from "lucide-react";
 import { CreateMeetingContext } from "../../app/meeting/create/context";
+import { cn } from "../../lib/utils";
+import { FormErrorMsg } from "../../app/meeting/create/page";
 
 export default function AttendeesInput({ name }: { name: string; }) {
   const [attendee, setAttendee] = useState<string>("");
   const [attendees, setAttendees] = useState<string[]>([]);
-  const { reviewing } = useContext(CreateMeetingContext);
+  const { reviewing, formData, setFormData, errors } = useContext(CreateMeetingContext);
 
-  /**
-   * @TODO attendees stringified into formdata to be sent to server
-   * check if this works
-   */
+  useEffect(() => {
+    setFormData({ ...formData, attendees });
+  }, [attendees.length])
+
   return (
     <div className="mb-12">
       <Label htmlFor="mandatoryAttendees">
@@ -24,7 +26,7 @@ export default function AttendeesInput({ name }: { name: string; }) {
         <Required />
       </Label>
       <Input
-        className="mt-2"
+        className={cn(["mt-2", errors.attendees && "border-red-700"])}
         value={attendee}
         onChange={(e) => setAttendee(e.target.value)}
         onKeyDown={(e) => {
@@ -37,6 +39,7 @@ export default function AttendeesInput({ name }: { name: string; }) {
         }}
         disabled={reviewing}
       />
+      {errors.attendees && <FormErrorMsg msg="Enter a valid email address." />}
       <div>
         {attendees.map((attendee, index) => (
           <Button

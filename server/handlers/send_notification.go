@@ -78,6 +78,7 @@ func SendNotification(env utils.ServerEnv, w http.ResponseWriter, r *http.Reques
 
 	// Create email message
 	m := gomail.NewMessage()
+	m.SetHeader("From", "schedulr@booking.gov.sg")
 	m.SetHeader("To", emailPayload["to"].([]string)...)
 	m.SetHeader("Subject", emailPayload["subject"].(string))
 	m.SetBody("text/html", emailPayload["html"].(string))

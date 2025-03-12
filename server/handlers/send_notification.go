@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -11,6 +10,8 @@ import (
 	"server/handlers/utils"
 	"server/helper"
 	"server/models"
+
+	"gopkg.in/gomail.v2"
 )
 
 // we need the booking id to be passed in request because theres no way to get
@@ -24,7 +25,6 @@ type SendNotificationPayload struct {
 func SendNotification(env utils.ServerEnv, w http.ResponseWriter, r *http.Request) error {
 	slog.Info("Sending email notifications")
 
-	nodemailer := os.Getenv("NODEMAILER_ENDPOINT")
 	var payload SendNotificationPayload
 	err := json.NewDecoder(r.Body).Decode(&payload)
 	if err != nil {
@@ -64,34 +64,33 @@ func SendNotification(env utils.ServerEnv, w http.ResponseWriter, r *http.Reques
 		return utils.StatusError{Code: 400, Err: err}
 	}
 
-	// Convert payload to JSON
-	jsonPayload, err := json.Marshal(emailPayload)
-	if err != nil {
-		return utils.StatusError{Code: 500, Err: errors.New("failed to marshal email payload")}
-	}
+	// Gmail SMTP settings
+	smtpServer := os.Getenv("SMTP_SERVER")
+	email := os.Getenv("SMTP_EMAIL")
+	password := os.Getenv("SMTP_PASSWORD")
 
-	// Create HTTP POST request to nodemailer
-	req, err := http.NewRequest("POST", nodemailer, bytes.NewBuffer(jsonPayload))
-	if err != nil {
-		return utils.StatusError{Code: 500, Err: errors.New("failed to create request")}
-	}
-
-	// Set headers
-	req.Header.Set("Content-Type", "application/json")
-
-	// Make the request
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	if err != nil {
-		return utils.StatusError{Code: 500, Err: errors.New("failed to send email")}
-	}
-	defer resp.Body.Close()
-
-	// Check response status
-	if resp.StatusCode != http.StatusOK {
+	if smtpServer == "" || email == "" || password == "" {
 		return utils.StatusError{
-			Code: resp.StatusCode,
-			Err:  fmt.Errorf("nodemailer returned non-200 status: %d", resp),
+			Code: 500,
+			Err:  errors.New("missing SMTP configuration"),
+		}
+	}
+
+	// Create email message
+	m := gomail.NewMessage()
+	m.SetHeader("To", emailPayload["to"].([]string)...)
+	m.SetHeader("Subject", emailPayload["subject"].(string))
+	m.SetBody("text/html", emailPayload["html"].(string))
+
+	slog.Info("Attempting to send email to:", emailPayload["to"])
+
+	// Configure SMTP dialer
+	d := gomail.NewDialer(smtpServer, 587, email, password)
+
+	if err := d.DialAndSend(m); err != nil {
+		return utils.StatusError{
+			Code: 500,
+			Err:  fmt.Errorf("failed to send email: %v", err),
 		}
 	}
 

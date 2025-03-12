@@ -108,21 +108,22 @@ export const ScheduleMeeting = ({
     return flattenedTimeslots.sort();
   }
 
-  const toWorkWith = flattenCommonTimeslots(
-    findCommonDateTimes(duplicateTimeslots(attendeeAvailabilities))
-  );
+  const commonTimeslots = flattenCommonTimeslots(findCommonDateTimes(attendeeAvailabilities));
+  // const toWorkWith = flattenCommonTimeslots(
+  //   findCommonDateTimes(duplicateTimeslots(attendeeAvailabilities))
+  // );
 
-  const extendedAttendees = [
-    ...event.attendees,
-    { email: "email 1", id: "1", alias: "demo alias 1" },
-    { email: "email 2", id: "2", alias: "demo alias 2" },
-    { email: "email 3", id: "3", alias: "demo alias 3" },
-  ];
+  // const extendedAttendees = [
+  //   ...event.attendees,
+  //   { email: "email 1", id: "1", alias: "demo alias 1" },
+  //   { email: "email 2", id: "2", alias: "demo alias 2" },
+  //   { email: "email 3", id: "3", alias: "demo alias 3" },
+  // ];
 
-  const eventWithExtendedAttendee = {
-    ...event,
-    attendees: extendedAttendees,
-  } as Event;
+  // const eventWithExtendedAttendee = {
+  //   ...event,
+  //   attendees: extendedAttendees,
+  // } as Event;
 
   const handleConfirmBooking = async (
     event: Event,
@@ -152,13 +153,13 @@ export const ScheduleMeeting = ({
     }
   };
 
-  return toWorkWith ? (
+  return commonTimeslots ? (
     <div>
       <h2 className="text-2xl font-semibold mb-4">
         Choose your preferred slot
       </h2>
       <Accordion type="single" collapsible className="w-full">
-        {toWorkWith.map((commonDateTimeslot) => (
+        {commonTimeslots.map((commonDateTimeslot) => (
           <AccordionItem
             key={commonDateTimeslot}
             value={commonDateTimeslot}
@@ -210,7 +211,7 @@ export const ScheduleMeeting = ({
         onOpenChange={setIsDialogOpen}
         selectedTimeslot={selectedTimeslot}
         onConfirm={handleConfirmBooking}
-        event={eventWithExtendedAttendee}
+        event={event}
       />
     </div>
   ) : (

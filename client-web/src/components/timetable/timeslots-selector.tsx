@@ -65,6 +65,7 @@ export default function TimeslotsSelector({
   };
   const addCurrentSelection = () => {
     if (!hoveredTimeslot || !startTimeslot || isSelecting === null) return;
+    const pageOffset = (page - 1) * 5;
 
     const { dayIndex: startDay, timeIndex: startTime } = startTimeslot;
     const { dayIndex: currentDay, timeIndex: currentTime } = hoveredTimeslot;
@@ -76,13 +77,13 @@ export default function TimeslotsSelector({
     const maxTime = Math.max(currentTime, startTime);
 
     if (isSelecting) {
-      for (let i = minDay; i <= maxDay; i++) {
+      for (let i = minDay + pageOffset; i <= maxDay + pageOffset; i++) {
         for (let k = minTime; k <= maxTime; k++) {
           selected[i] ? selected[i]?.add(k) : (selected[i] = new Set([k]));
         }
       }
     } else {
-      for (let i = minDay; i <= maxDay; i++) {
+      for (let i = minDay + pageOffset; i <= maxDay + pageOffset; i++) {
         for (let k = minTime; k <= maxTime; k++) {
           selected[i] && selected[i]?.delete(k);
         }

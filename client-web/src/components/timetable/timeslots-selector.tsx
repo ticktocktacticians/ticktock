@@ -1,6 +1,6 @@
 "use client";
 
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 import TimetableRow from "./timetable-row";
 import {
   SelectedTimeslots,
@@ -44,9 +44,17 @@ export default function TimeslotsSelector({
         const day = days[dayIndex];
         if (!day) return acc;
         selected[dayIndex as unknown as number]?.forEach((timeIndex) => {
-          const hour = (24 * INTERVALS_PER_HOUR) / timeIndex;
-          const datetime = day.hour(hour);
-          acc.push(datetime.toISOString());
+          const hour = timeIndex / INTERVALS_PER_HOUR;
+          const isHalfHour = hour % 1 !== 0;
+          acc.push(
+            new Date(
+              day.year(),
+              day.month(),
+              day.date(),
+              Math.floor(hour),
+              isHalfHour ? 30 : 0
+            ).toISOString()
+          );
         });
         return acc;
       },

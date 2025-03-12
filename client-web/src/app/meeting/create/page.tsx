@@ -18,7 +18,9 @@ import Required from "@/components/common/required";
 import DateTimeSelector from "@/components/meeting/date-time-selector";
 import { Button } from "@/components/ui/button";
 import { useContext, useState, type KeyboardEvent } from "react";
-import EmailPreview, { EmailPreviewProps } from "@/components/meeting/email-preview";
+import EmailPreview, {
+  EmailPreviewProps,
+} from "@/components/meeting/email-preview";
 import { CreateMeetingContext } from "./context";
 import { cn } from "../../../lib/utils";
 import SentDialog from "../../../components/meeting/sent-dialog";
@@ -37,9 +39,10 @@ export default function CreateMeetingPage() {
     meetingDuration,
     setMeetingDesc,
   } = useContext(CreateMeetingContext);
-    const { data: user } = useGetUser();
-  
+  const { data: user } = useGetUser();
+
   const [sentDialogOpen, setSentDialogOpen] = useState(false);
+  const [meetingFormat, setMeetingFormat] = useState("VIRTUAL");
 
   const emailPreviewProps: EmailPreviewProps = {
     confirmationPage: false,
@@ -56,7 +59,10 @@ export default function CreateMeetingPage() {
           e.key === "Enter" && e.preventDefault()
         }
         action={createMeeting}
-        className={cn(["flex flex-col max-w-[540px]", reviewing && "text-slate-400"])}
+        className={cn([
+          "flex flex-col max-w-[540px]",
+          reviewing && "text-slate-400",
+        ])}
       >
         <h2 className="text-3xl text-indigo-600 w-full text-left font-semibold mb-8">
           {reviewing ? "Review new meeting details" : "Create New Meeting"}
@@ -74,6 +80,7 @@ export default function CreateMeetingPage() {
             className="mt-2"
             disabled={reviewing}
           />
+          <input type="hidden" name="meetingTitle" value={meetingTitle} />
         </div>
 
         <div className="mb-4">
@@ -85,6 +92,7 @@ export default function CreateMeetingPage() {
             className="mt-2"
             disabled={reviewing}
           />
+          <input type="hidden" name="meetingDesc" value={meetingDesc} />
         </div>
 
         <div className="mb-4">
@@ -122,11 +130,12 @@ export default function CreateMeetingPage() {
             <Required />
           </Label>
           <RadioGroup
-            name="meetingFormat"
             defaultValue="VIRTUAL"
             className="mt-2"
             disabled={reviewing}
+            onValueChange={(v) => setMeetingFormat(v)}
           >
+            <input type="hidden" name="meetingFormat" value={meetingFormat} />
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="VIRTUAL" id="format-1" />
               <Label htmlFor="format-1">Virtual</Label>
@@ -164,7 +173,7 @@ export default function CreateMeetingPage() {
         )}
         {reviewing && (
           <>
-            <EmailPreview {...emailPreviewProps}/>
+            <EmailPreview {...emailPreviewProps} />
             <div className="flex justify-between items-center mt-[72px]">
               <Button
                 variant="outline"
@@ -173,7 +182,11 @@ export default function CreateMeetingPage() {
               >
                 Back
               </Button>
-              <Button type="submit" onClick={() => setSentDialogOpen(true)} className="w-[139px] bg-indigo-600">
+              <Button
+                type="submit"
+                onClick={() => setSentDialogOpen(true)}
+                className="w-[139px] bg-indigo-600"
+              >
                 Send requests
               </Button>
             </div>

@@ -13,6 +13,7 @@ import { useState } from "react";
 import { ConfirmationModal } from "./confirmation";
 import { Booking, Event } from "@/app/public/[meetingId]/page";
 import { createBooking, sendNotification } from "./actions";
+import { useRouter } from "next/navigation";  
 
 export const ScheduleMeeting = ({
   attendeeAvailabilities,
@@ -23,6 +24,7 @@ export const ScheduleMeeting = ({
 }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedTimeslot, setSelectedTimeslot] = useState<string>("");
+  const router = useRouter();
 
   //NOTE  temp function to duplicate attendee availabilities
   function duplicateTimeslots(
@@ -145,6 +147,7 @@ export const ScheduleMeeting = ({
           bookingId: createdBooking.id.toString(),
         });
         alert("Email notification sent out to attendees!");
+        router.push("/");
       } else {
         throw new Error("Created Booking has no id");
       }

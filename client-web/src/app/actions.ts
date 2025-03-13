@@ -77,6 +77,7 @@ export async function logout() {
 		// TODO: Handle error
 		redirect("/error");
 	}
+	redirect("/login");
 }
 
 export const createUser = async (formData: FormData) => {

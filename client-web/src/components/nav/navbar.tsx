@@ -3,11 +3,9 @@
 import {
     NavigationMenu,
     NavigationMenuItem,
-    NavigationMenuLink,
     NavigationMenuList,
 } from "../ui/navigation-menu";
 import AppSidebarTrigger from "./app-sidebar-trigger";
-import { ModeToggle } from "../mode-toggle";
 import { useSidebar } from "../ui/sidebar";
 import ProfileButton from "./profile-button";
 import { navItems } from "./nav-items";

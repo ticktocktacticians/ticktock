@@ -37,7 +37,7 @@ export default function RootLayout({
 					<div>
 						<Header />
 						<PageContainer>
-							<NavAccess />
+							{/* <NavAccess /> */}
 							<AppSidebar />
 							{children}
 						</PageContainer>

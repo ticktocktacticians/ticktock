@@ -1,4 +1,5 @@
 import { getBrowserUserSession } from "@/utils/supabase/client";
+import { SERVER_URL } from "../../../lib/apis/common";
 export interface AttendeesTimeslotsForEventRequest {
   attendeeIds: string[];
   eventId: string;
@@ -26,7 +27,7 @@ export const getEvent = async (eventId: string) => {
   if (!accessToken) return null;
 
   return await fetch(
-    `${process.env.NEXT_PUBLIC_SERVER_URL}/auth/event/${eventId}`,
+    `${SERVER_URL}/auth/event/${eventId}`,
     {
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -45,7 +46,7 @@ export const getAttendeesTimeslotsForEvent = async (
   if (!accessToken) return null;
 
   return await fetch(
-    `${process.env.NEXT_PUBLIC_SERVER_URL}/auth/event/attendees-timeslots`,
+    `${SERVER_URL}/auth/event/attendees-timeslots`,
     {
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -62,7 +63,7 @@ export const createBooking = async (request: CreateBookingRequest) => {
   if (!accessToken) return null;
 
   return await fetch(
-    `${process.env.NEXT_PUBLIC_SERVER_URL}/auth/event/booking`,
+    `${SERVER_URL}/auth/event/booking`,
     {
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -79,7 +80,7 @@ export const sendNotification = async (sendNotificationRequest: SendNotification
   if (!accessToken) return null;
 
   return await fetch(
-    `${process.env.NEXT_PUBLIC_SERVER_URL}/auth/send-notification`,
+    `${SERVER_URL}/auth/send-notification`,
     {
       headers: {
         Authorization: `Bearer ${accessToken}`,

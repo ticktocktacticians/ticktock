@@ -3,7 +3,7 @@ package models
 import "time"
 
 type Timeslot struct {
-	BaseModel     `json:"baseModel"`
+	BaseModel
 	ID            uint      `gorm:"primarykey" json:"id"`
 	StartDateTime time.Time `gorm:"not null" json:"startDateTime"`
 	EndDateTime   time.Time `gorm:"not null" json:"endDateTime"`

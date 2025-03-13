@@ -14,7 +14,7 @@ export default async function LoginPage() {
     <div className="flex justify-center items-center">
       <Card className="w-[400px] py-10 px-12 flex flex-col justify-center items-center">
         <h1 className="text-3xl font-semibold mb-8">Welcome Back</h1>
-        <form className="flex flex-col gap-3 w-full">
+        <div className="flex flex-col gap-3 w-full">
           <Input
             id="email"
             name="email"
@@ -41,7 +41,7 @@ export default async function LoginPage() {
             </div>
             <Button
               onClick={loginWithOAuth}
-              className="dark text-slate-900 border border-[#747775]"
+              className="dark bg-white text-slate-900 border border-[#747775]"
             >
               <svg
                 version="1.1"
@@ -70,7 +70,7 @@ export default async function LoginPage() {
               Sign in with Google
             </Button>
           </div>
-        </form>
+        </div>
       </Card>
     </div>
   );

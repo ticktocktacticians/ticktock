@@ -1,8 +1,8 @@
 package models
 
 type Booking struct {
-	BaseModel `json:"baseModel"`
-	ID        uint `gorm:"primarykey" json:"id"`
+	BaseModel
+	ID uint `gorm:"primarykey" json:"id"`
 
 	// associations
 	TimeslotID uint      `gorm:"not null" json:"timeslotID"`

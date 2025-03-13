@@ -3,8 +3,8 @@ package models
 import "github.com/google/uuid"
 
 type Availability struct {
-	BaseModel `json:"baseModel"`
-	ID        uint `gorm:"primarykey" json:"id"`
+	BaseModel
+	ID uint `gorm:"primarykey" json:"id"`
 
 	// associations
 	AttendeeID uuid.UUID   `gorm:"type:uuid;not null" json:"attendeeID"`

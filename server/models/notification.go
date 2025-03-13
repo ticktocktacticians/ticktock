@@ -8,9 +8,9 @@ import (
 )
 
 type Notification struct {
-	BaseModel `json:"baseModel"`
-	ID        uint         `gorm:"primarykey" json:"id"`
-	Message   pgtype.JSONB `gorm:"type:jsonb;default:'{}'::jsonb" json:"message"`
+	BaseModel
+	ID      uint         `gorm:"primarykey" json:"id"`
+	Message pgtype.JSONB `gorm:"type:jsonb;default:'{}'::jsonb" json:"message"`
 
 	// enums
 	Status enumtypes.NotificationStatus `gorm:"type:notification_status;not null" json:"status"`

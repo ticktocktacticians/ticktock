@@ -8,7 +8,7 @@ import (
 )
 
 type Event struct {
-	BaseModel      `json:"baseModel"`
+	BaseModel
 	ID             uint      `gorm:"primarykey" json:"id"`
 	Title          string    `gorm:"not null" json:"title"`
 	Description    *string   `gorm:"null" json:"description"`

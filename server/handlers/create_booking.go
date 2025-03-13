@@ -72,6 +72,14 @@ func CreateBooking(env utils.ServerEnv, w http.ResponseWriter, r *http.Request) 
 
 	slog.Info("Successfully created booking = ", booking)
 
+	// update event's status
+	result = db.Model(&eventModel).Update("status", "SCHEDULED")
+	if result.Error != nil {
+		slog.Error("Failed to update event status:", result.Error)
+		return utils.StatusError{Code: 500, Err: errors.New("failed to update event status")}
+	}
+	slog.Info("Successfully updated event status to SCHEDULED")
+
 	// get the booking and return in response. currently just needed for the booking id
 	createdBooking := models.Booking{}
 	bookingResult := env.GetDB().First(&createdBooking, booking.ID)

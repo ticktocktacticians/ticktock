@@ -39,8 +39,8 @@ export default function Home() {
       <Button className="bg-indigo-600 mb-6 w-1/2 h-16" onClick={() => redirect("/meeting/create")}><PlusCircle /> Create new meeting</Button>
       <h1 className="text-xl font-semibold mb-5">Your meetings</h1>
       <div className="flex flex-col gap-2 h-[420px] overflow-y-scroll">
-        {events
-          ?.sort((e1, e2) => e1.id - e2.id)
+        {events?.length ? events
+          .sort((e1, e2) => e1.id - e2.id)
           .map((event) => {
             return (
               <Card
@@ -59,7 +59,7 @@ export default function Home() {
                 </div>
               </Card>
             );
-          })}
+          }) : <span>Wow, you have no meetings scheduled. Such great work-life balance!</span>}
       </div>
     </div>
   );

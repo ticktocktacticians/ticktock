@@ -27,6 +27,7 @@ import SentDialog from "@/components/meeting/sent-dialog";
 import { useGetUser } from "@/lib/queries/user";
 import { validate } from "./validations";
 import FormErrorMsg from "@/components/common/form-error-msg";
+import { Event } from "@/app/public/[meetingId]/page";
 
 const MEETING_DURATION_OPTS = [60, 120, 180, 240];
 
@@ -34,9 +35,9 @@ export default function CreateMeetingPage() {
   const { reviewing, setReviewing, formData, setFormData, errors, setErrors } =
     useContext(CreateMeetingContext);
   const { data: user } = useGetUser();
-
   const [sentDialogOpen, setSentDialogOpen] = useState(false);
   const [meetingFormat, setMeetingFormat] = useState("VIRTUAL");
+  const [createdEvent, setCreatedEvent] = useState<Event|undefined>(undefined);
 
   const emailPreviewProps: EmailPreviewProps = {
     confirmationPage: false,
@@ -46,13 +47,24 @@ export default function CreateMeetingPage() {
     meetingDesc: formData.meetingDesc,
   };
 
+
+  const handleSubmit = async (formData: FormData) => {
+    setSentDialogOpen(true);
+    const createdEventResponse = await createMeeting(formData);
+    const createdEvent = await createdEventResponse?.json() as Event;
+    if (createdEvent) {
+      console.log("Created event:", createdEvent);
+      setCreatedEvent(createdEvent);
+    }
+  };
+
   return (
     <div className="flex flex-col justify-center items-center">
       <form
         onKeyDown={(e: KeyboardEvent) =>
           e.key === "Enter" && e.preventDefault()
         }
-        action={createMeeting}
+        action={handleSubmit}
         className={cn([
           "flex flex-col max-w-[540px]",
           reviewing && "text-slate-400",
@@ -222,7 +234,7 @@ export default function CreateMeetingPage() {
             </div>
           </>
         )}
-        <SentDialog open={sentDialogOpen} setOpen={setSentDialogOpen} />
+        <SentDialog open={sentDialogOpen} setOpen={setSentDialogOpen} event={createdEvent}/>
       </form>
     </div>
   );

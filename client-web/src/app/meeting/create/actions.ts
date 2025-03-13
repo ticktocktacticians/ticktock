@@ -23,12 +23,16 @@ export const createMeeting = async (formData: FormData) => {
   };
 
   const url = `${SERVER_URL}/auth/event`;
-  accessToken &&
-    (await fetch(url, {
+
+  if (!accessToken) return null;
+
+  const createdEvent =  await fetch(url, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
       method: "POST",
       body: JSON.stringify(body),
-    }).catch((err) => console.error(`${url} call error: `, err)));
+    }).catch((err) => console.error(`${url} call error: `, err));
+
+    return createdEvent
 };

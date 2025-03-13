@@ -34,9 +34,11 @@ export default function TimeslotsSelector({
     page,
   } = useContext(TimetableContext);
     const { reviewing } = useContext(CreateMeetingContext);
+  
+  const pageOffset = (page - 1) * 5;
 
   const isTimeslotSelected = (timeslot: TimeslotData | null) =>
-    !!(timeslot && selected[timeslot.dayIndex]?.has(timeslot.timeIndex));
+    !!(timeslot && selected[timeslot.dayIndex + pageOffset]?.has(timeslot.timeIndex));
   const updateProcessedTimeslots = (selected: SelectedTimeslots) => {
     const timeslotISOStrings = Object.keys(selected).reduce(
       (acc, dayIndexStr) => {
@@ -65,7 +67,6 @@ export default function TimeslotsSelector({
   };
   const addCurrentSelection = () => {
     if (!hoveredTimeslot || !startTimeslot || isSelecting === null) return;
-    const pageOffset = (page - 1) * 5;
 
     const { dayIndex: startDay, timeIndex: startTime } = startTimeslot;
     const { dayIndex: currentDay, timeIndex: currentTime } = hoveredTimeslot;

@@ -1,5 +1,6 @@
 import { getBrowserUserSession } from "@/utils/supabase/client";
 import { SERVER_URL } from "./common";
+import { Timeslot } from "../../app/public/[meetingId]/page";
 
 export const EVENT_STATUS = {
   PENDING_INPUT: "Pending input",
@@ -18,13 +19,23 @@ interface Event {
   format: string;
 }
 
-export const getEvents = async (): Promise<Event[]|null> => {
+interface Booking {
+  id: number;
+  timeslot: Timeslot
+}
+
+interface Response {
+  events: Event[];
+  bookings: Booking[];
+}
+
+export const getEventsAndBookings = async (): Promise<Response|null> => {
   const accessToken = (await getBrowserUserSession())?.access_token;
 
   if (!accessToken) return null;
 
   return (
-    await fetch(`${SERVER_URL}/auth/event`, {
+    await fetch(`${SERVER_URL}/auth/events-and-bookings`, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },

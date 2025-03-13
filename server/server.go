@@ -121,7 +121,7 @@ func main() {
 	authMux := chi.NewRouter()
 	authMux.Handle("GET /user", handlersUtils.Handler{Env: env, H: handlers.GetUser})
 	authMux.Handle("POST /user", handlersUtils.Handler{Env: env, H: handlers.CreateUser})
-	authMux.Handle("GET /event", handlersUtils.Handler{Env: env, H: handlers.GetEvents})
+	authMux.Handle("GET /events-and-bookings", handlersUtils.Handler{Env: env, H: handlers.GetEventsAndBookings})
 	authMux.Handle("GET /event/{id}", handlersUtils.Handler{Env: env, H: handlers.GetEventDetails})
 	authMux.Handle("POST /event", handlersUtils.Handler{Env: env, H: handlers.CreateEvent})
 	authMux.Handle("POST /event/attendees-timeslots", handlersUtils.Handler{Env: env, H: handlers.GetAttendeesTimeslotsForEvent})

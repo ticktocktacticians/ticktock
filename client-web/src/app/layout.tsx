@@ -4,7 +4,6 @@ import "./globals.css";
 import Providers from "./providers";
 import PageContainer from "@/components/page-container";
 import AppSidebar from "@/components/nav/app-sidebar";
-import NavAccess from "@/components/nav/nav-access";
 import Header from "@/components/common/header";
 
 const geistSans = localFont({

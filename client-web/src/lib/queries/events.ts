@@ -1,14 +1,14 @@
 import { useQuery } from "@tanstack/react-query";
 import { getQueryClient } from "../../app/providers";
-import { getEvents } from "../apis/getEvents";
+import { getEventsAndBookings } from "../apis/getEventsAndBookings";
 
-export const useGetEvents = () =>
+export const useGetEventsAndBookings = () =>
   useQuery({
-    queryKey: ["event"],
-    queryFn: getEvents,
+    queryKey: ["event", "booking"],
+    queryFn: getEventsAndBookings,
   });
 
 export const invalidateEvents = () =>
   getQueryClient().invalidateQueries({
-    queryKey: ["event"],
+    queryKey: ["event", "booking"],
   });

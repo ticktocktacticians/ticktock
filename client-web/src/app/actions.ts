@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 import { getServerClient, getServerUserSession } from "@/utils/supabase/server";
-import { SERVER_URL } from "../lib/apis/common";
+import { CLIENT_URL, SERVER_URL } from "../lib/apis/common";
 
 export async function login(formData: FormData) {
 	const supabase = await getServerClient();
@@ -55,7 +55,7 @@ export async function loginWithOAuth() {
 	const { data, error } = await supabase.auth.signInWithOAuth({
 		provider: "google",
 		options: {
-			redirectTo: `${SERVER_URL}/auth/callback`,
+			redirectTo: `${CLIENT_URL}/auth/callback`,
 		},
 	});
 

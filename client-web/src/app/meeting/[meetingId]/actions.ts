@@ -90,3 +90,19 @@ export const sendNotification = async (sendNotificationRequest: SendNotification
     }
   );
 }
+
+export const getEventBooking = async (eventId: string) => {
+  const accessToken = (await getBrowserUserSession())?.access_token;
+
+  if (!accessToken) return null;
+
+  return await fetch(
+    `${SERVER_URL}/auth/event/${eventId}/booking`,
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+      method: "GET",
+    }
+  );
+};

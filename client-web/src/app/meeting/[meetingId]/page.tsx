@@ -6,10 +6,11 @@ import {
 	AttendeesTimeslotsForEventRequest,
 	getAttendeesTimeslotsForEvent,
 	getEvent,
+	getEventBooking,
 } from "./actions";
 import { MeetingAttendeeAvailabilityAccordion } from "./attendees";
 import { EventDetailCard } from "./eventDetailCard";
-import { Event } from "@/app/public/[meetingId]/page";
+import { Booking, Event } from "@/app/public/[meetingId]/page";
 import { Button } from "@/components/ui/button";
 import { ScheduleMeeting } from "./scheduleMeeting";
 import _ from "lodash";
@@ -120,6 +121,7 @@ function mapAttendeeAvailability(
 export default function CreateMeetingDetailsPage() {
 	const params = useParams();
 	const [event, setEvent] = useState<Event | null>(null);
+	const [booking, setBooking] = useState<Booking | undefined> (undefined);
 	const [attendeeAvailabilities, setAttendeesAvailabilities] = useState<
 		MappedAttendeesAvailabilities[]
 	>([]);
@@ -135,7 +137,14 @@ export default function CreateMeetingDetailsPage() {
 				if (response) {
 					const data = await response.json();
 					setEvent(data);
-					console.log(">> event data = ", data);
+					// if scheduled, fetch booking to populate card
+					if(data?.status === 'SCHEDULED'){
+						const getEventBookingResponse = await getEventBooking(params.meetingId as string)
+						if (getEventBookingResponse) {
+							const bookingData = await getEventBookingResponse.json();
+							setBooking(bookingData);
+						}
+					}
 				} else {
 					console.error("no event returned");
 				}
@@ -209,7 +218,7 @@ export default function CreateMeetingDetailsPage() {
 					</h1>
 
 					<div className="grid grid-cols-2 gap-5 mb-4">
-						<EventDetailCard event={event} />
+						<EventDetailCard event={event} booking={booking} />
 
 						<div className="flex flex-col space-y-4">
 							<Button

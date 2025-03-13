@@ -58,6 +58,7 @@ export interface Booking{
 	startDateTime: string;
 	endDateTime: string;
 	timeslotId: number;
+	timeslot: Timeslot;
 	attendees: UserModel[];
 }
 

@@ -53,7 +53,7 @@ export default function Timetable({ dateRange, setTimeslots }: TimeTableProps) {
 
   return (
     <TimetableProvider>
-      <div className="w-full flex overflow-y-auto relative">
+      <div className="w-full flex overflow-y-auto relative mt-3">
         <DaysColumn days={days} />
         <div className="overflow-x-auto relative">
           <Axis />

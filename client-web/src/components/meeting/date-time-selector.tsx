@@ -40,6 +40,13 @@ export default function DateTimeSelector({ name }: { name: string; }) {
         }
       />
       <span>Timeslots to offer</span>
+      <br />
+      <span className="text-sm">
+        <em>
+          Click and drag on the grid to select / Scroll horizontally to view
+          more time slots.
+        </em>
+      </span>
       <Timetable
         dateRange={{ start: startDate, end: endDate }}
         setTimeslots={setTimeslots}

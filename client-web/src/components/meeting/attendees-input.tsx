@@ -25,6 +25,8 @@ export default function AttendeesInput({ name }: { name: string; }) {
         Mandatory attendees
         <Required />
       </Label>
+      <br/>
+      <span className="text-sm mt-2"><em>Hit ‘Enter’ after typing each email address.</em></span>
       <Input
         className={cn(["mt-2", errors.attendees && "border-red-700"])}
         value={attendee}

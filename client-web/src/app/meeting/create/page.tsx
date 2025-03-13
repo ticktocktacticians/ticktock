@@ -49,12 +49,14 @@ export default function CreateMeetingPage() {
 
 
   const handleSubmit = async (formData: FormData) => {
-    setSentDialogOpen(true);
-    const createdEventResponse = await createMeeting(formData);
-    const createdEvent = await createdEventResponse?.json() as Event;
-    if (createdEvent) {
-      console.log("Created event:", createdEvent);
-      setCreatedEvent(createdEvent);
+    try{
+      setSentDialogOpen(true);
+      const createdEvent: Event = await createMeeting(formData);
+      if (createdEvent) {
+        setCreatedEvent(createdEvent);
+      }
+    }catch(e){
+      console.warn(">> error creating meeting: ", e)
     }
   };
 

@@ -42,7 +42,7 @@ func GetAttendeeAvailabity(env utils.ServerEnv, w http.ResponseWriter, r *http.R
 	// Get event
 	var availability models.Availability
 	result := env.GetDB().Preload("Timeslots", "event_id = ?", eventId).First(&availability, "attendee_id = ?", user.ID)
-	if result.RowsAffected == 0 {
+	if result.RowsAffected == 0 || len(availability.Timeslots) == 0 {
 		slog.Warn(fmt.Sprintf("Availability not found: %s", eventId))
 		return utils.StatusError{Code: 404, Err: errors.New("failed to get availability")}
 	}

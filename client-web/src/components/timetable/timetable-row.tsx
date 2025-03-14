@@ -73,7 +73,7 @@ function TimeSlot({
       onPointerEnter={onMouseEnter}
       className={cn([
         "border-x-[0.5px] border-x-slate-200 w-4 h-11 flex-shrink-0",
-        isSelected && "bg-blue-400",
+        isSelected && "bg-indigo-400",
         "border-b border-y-slate-900",
         index === 0 && "border-t",
         index === 0 && errors.timeslots && "border-t-red-700",

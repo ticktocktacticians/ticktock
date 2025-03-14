@@ -14,6 +14,7 @@ import { EVENT_STATUS } from "../lib/apis/getEventsAndBookings";
 import { Calendar, Clock, Hourglass, MapPin, PlusCircle } from "lucide-react";
 import { formatTime } from "../utils/date";
 import { useSidebar } from "../components/ui/sidebar";
+import { cn } from "../lib/utils";
 
 const FORMAT_DISPLAY = {
   VIRTUAL: "Virtual",
@@ -42,17 +43,17 @@ export default function Home() {
   }
 
   return (
-    <div className="flex flex-col place-self-center sm:w-[720px] w-[360px] overflow-y-hidden">
-      <h1 className="text-2xl font-semibold mb-5 text-slate-400">
+    <div className="flex flex-col place-self-center sm:w-[800px] w-[360px] overflow-y-hidden">
+      <h1 className="text-2xl font-semibold mb-5">
         Hi, {user.email}!
       </h1>
       <Button
-        className="bg-indigo-600 mb-6 w-1/2 h-16"
+        className="bg-indigo-600 mb-6 w-[312px] h-10"
         onClick={() => redirect("/meeting/create")}
       >
         <PlusCircle /> Create new meeting
       </Button>
-      <h1 className="text-xl font-semibold mb-5">Your meetings</h1>
+      <h1 className="text-xl font-semibold mb-5 text-indigo-600">Your meetings</h1>
       <div className="flex flex-col gap-2 h-[420px] overflow-y-scroll">
         {events?.length ? (
           events
@@ -75,19 +76,21 @@ export default function Home() {
                   className="flex h-18 items-center justify-between sm:px-6 px-3 py-4 rounded-none"
                   key={event.id}
                 >
-                  <h2>
-                    {event.title ? truncate(event.title) : "-"}
-                  </h2>
+                  <h2 className="text-sm">{event.title ? truncate(event.title) : "-"}</h2>
                   <div className="flex items-center">
                     {!isMobile && (
                       <>
                         <Badge
                           variant="secondary"
-                          className="mr-4 h-6 rounded-sm text-xs sm:text-sm"
+                          className={cn([
+                            "mr-8 h-6 rounded-sm text-xs ",
+                            "bg-slate-500 text-white",
+                            event.status === "SCHEDULED" && "bg-indigo-200 text-indigo-600"
+                          ])}
                         >
                           {EVENT_STATUS[event.status]}
                         </Badge>
-                        <div className="flex gap-2 mr-5">
+                        <div className="flex gap-4 mr-8 text-slate-400">
                           <div className="flex flex-col gap-2 w-28">
                             <span className="flex text-xs">
                               <Calendar height="16px" />
@@ -113,7 +116,7 @@ export default function Home() {
                     )}
                     <Button
                       onClick={() => redirect(`/meeting/${event.id}`)}
-                      className="bg-indigo-600 text-xs sm:w-fit w-20"
+                      className="dark border border-slate-200 bg-white text-xs sm:w-fit w-20"
                     >
                       View Details
                     </Button>

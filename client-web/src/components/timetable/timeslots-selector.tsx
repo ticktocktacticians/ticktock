@@ -97,19 +97,25 @@ export default function TimeslotsSelector({
 
   const daysToShow = days.slice((page - 1) * 5, page * 5);
 
+  const onMouseDown = () => {
+    setIsSelecting(!isTimeslotSelected(hoveredTimeslot));
+    setStartTimeslot(hoveredTimeslot);
+  };
+
+  const onMouseUp = () => {
+    addCurrentSelection();
+    setIsSelecting(null);
+    setStartTimeslot(null);
+    setHoveredTimeslot(null);
+  }
+
   return (
     <div
       // if timeslot is already selected, then you are DESELECTING it (and vice versa)
-      onMouseDown={() => {
-        setIsSelecting(!isTimeslotSelected(hoveredTimeslot));
-        setStartTimeslot(hoveredTimeslot);
-      }}
-      onMouseUp={() => {
-        addCurrentSelection();
-        setIsSelecting(null);
-        setStartTimeslot(null);
-        setHoveredTimeslot(null);
-      }}
+      onMouseDown={onMouseDown}
+      onPointerDown={onMouseDown}
+      onMouseUp={onMouseUp}
+      onPointerUp={onMouseUp}
       className={ reviewing ? "pointer-events-none no-select" : ""}
     >
       {daysToShow.map((_, dayIndex) => {

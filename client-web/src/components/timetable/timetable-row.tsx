@@ -70,6 +70,7 @@ function TimeSlot({
   return (
     <div
       onMouseEnter={onMouseEnter}
+      onPointerEnter={onMouseEnter}
       className={cn([
         "border-x-[0.5px] border-x-slate-200 w-4 h-11 flex-shrink-0",
         isSelected && "bg-blue-400",

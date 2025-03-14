@@ -69,7 +69,7 @@ export default function CreateMeetingPage() {
 				}
 				action={handleSubmit}
 				className={cn([
-					"flex flex-col max-w-[540px]",
+					"flex flex-col sm:max-w-[540px] max-w-[360px]",
 					reviewing && "text-slate-400",
 				])}
 			>

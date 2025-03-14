@@ -1,38 +1,58 @@
-import { login, loginWithOAuth, signup } from "@/app/actions";
+"use client";
+
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card } from "../../components/ui/card";
-import { getServerUserSession } from "../../utils/supabase/server";
 import { redirect } from "next/navigation";
+import { getBrowserUserSession } from "../../utils/supabase/client";
+import { useEffect, useState } from "react";
+import { login, loginWithOAuth, signup } from "../../lib/apis/login";
 
-export default async function LoginPage() {
-  const session = await getServerUserSession();
+export default function LoginPage() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  if (session) redirect("/");
+  useEffect(() => {
+    const getSession = async () => {
+      const session = await getBrowserUserSession();
+
+      if (session !== null) redirect("/");
+    };
+
+    getSession();
+  }, []);
 
   return (
     <div className="flex justify-center items-center">
       <Card className="w-[400px] py-10 px-12 flex flex-col justify-center items-center">
         <h1 className="text-3xl font-semibold mb-8">Welcome Back</h1>
-        <form className="flex flex-col gap-3 w-full">
+        <div className="flex flex-col gap-3 w-full">
           <Input
             id="email"
             name="email"
             type="email"
             placeholder="Email address"
             className="w-full"
+            onChange={(e) => setEmail(e.target.value)}
           />
           <Input
             id="password"
             name="password"
             type="password"
             placeholder="Password"
+            onChange={(e) => setPassword(e.target.value)}
           />
           <div className="flex flex-col gap-3">
-            <Button formAction={login} className="bg-indigo-600">
+            <Button
+              onClick={async () => await login({ email, password })}
+              className="bg-indigo-600"
+            >
               Login
             </Button>
-            <Button formAction={signup} className="bg-indigo-600">
+            <Button
+              onClick={async () => await signup({ email, password })}
+              className="bg-indigo-600"
+            >
               Sign up
             </Button>
             <div className="flex justify-center items-center text-xs my-2">
@@ -70,7 +90,7 @@ export default async function LoginPage() {
               Sign in with Google
             </Button>
           </div>
-        </form>
+        </div>
       </Card>
     </div>
   );

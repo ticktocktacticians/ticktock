@@ -55,11 +55,11 @@ export function ConfirmationModal({
             </h1>
             <div className="py-2">
               <div className="flex items-center gap-2 mb-2">
-                <Calendar className="h-4 w-4" />
+                <Calendar className="h-4 w-4 text-slate-400" />
                 <span>{formatDate(selectedTimeslot)}</span>
               </div>
               <div className="flex items-center gap-2 mb-2">
-                <Clock className="h-4 w-4" />
+                <Clock className="h-4 w-4 text-slate-400" />
                 <span>
                   {selectedTimeslot.slice(11, 16) +
                     " - " +
@@ -70,7 +70,7 @@ export function ConfirmationModal({
                 </span>
               </div>
               <div className="flex items-center gap-2">
-                <MapPin className="h-4 w-4" />
+                <MapPin className="h-4 w-4 text-slate-400" />
                 <span>
                   {event.format?.charAt(0) +
                     event.format?.slice(1)?.toLowerCase()}
@@ -81,7 +81,7 @@ export function ConfirmationModal({
               Attendees
             </h1>
             <div className="border rounded-md">
-              <div className="h-[200px] overflow-y-auto pr-1">
+              <div className="overflow-y-auto pr-1">
                 <div className="p-4">
                   {event.attendees.map((attendee, index) => (
                     <div

@@ -13,7 +13,7 @@ import { useState } from "react";
 import { ConfirmationModal } from "./confirmation";
 import { Booking, Event } from "@/app/public/[meetingId]/page";
 import { createBooking, sendNotification } from "./actions";
-import { useRouter } from "next/navigation";  
+import { useRouter } from "next/navigation";
 
 export const ScheduleMeeting = ({
   attendeeAvailabilities,
@@ -110,7 +110,9 @@ export const ScheduleMeeting = ({
     return flattenedTimeslots.sort();
   }
 
-  const commonTimeslots = flattenCommonTimeslots(findCommonDateTimes(attendeeAvailabilities));
+  const commonTimeslots = flattenCommonTimeslots(
+    findCommonDateTimes(attendeeAvailabilities)
+  );
   // const toWorkWith = flattenCommonTimeslots(
   //   findCommonDateTimes(duplicateTimeslots(attendeeAvailabilities))
   // );
@@ -157,61 +159,62 @@ export const ScheduleMeeting = ({
   };
 
   return commonTimeslots ? (
-    <div>
+    <div className="sticky top-0 pt-2 max-h-screen overflow-y-auto">
       <h2 className="text-2xl font-semibold mb-4">
         Choose your preferred slot
       </h2>
-      {commonTimeslots.length > 1 ? 
-      <Accordion type="single" collapsible className="w-full">
-      {commonTimeslots.map((commonDateTimeslot) => (
-        <AccordionItem
-          key={commonDateTimeslot}
-          value={commonDateTimeslot}
-          className="outline-no-bottom last:border-b-2 border-gray-200 pt-2"
-        >
-          <div className="flex justify-between items-center w-full">
-            <AccordionTrigger className="flex-grow w-full px-4 py-4 [&>svg]:order-1 [&>svg]:mr-auto [&>svg]:ml-2">
-              <div className="text-lg font-semibold flex items-center justify-between w-full">
-                <div className="flex items-center">
-                  {/* Date section */}
-                  <div className="flex items-center gap-2 min-w-[300px]">
-                    <Calendar className="h-5 w-5 flex-shrink-0" />
-                    <span>{formatDate(commonDateTimeslot)}</span>
-                  </div>
-
-                  {/* Time section */}
-                  <div className="flex items-center gap-2 ml-4">
-                    <Clock className="h-5 w-5 flex-shrink-0" />
-                    <span>{commonDateTimeslot.slice(11, 16)}</span>
-                  </div>
-                </div>
-              </div>
-            </AccordionTrigger>
-            <Button
-              variant="outline"
-              size="sm"
-              className="text-indigo-600 mr-5"
-              onClick={(e) => {
-                e.stopPropagation();
-                setSelectedTimeslot(commonDateTimeslot);
-                setIsDialogOpen(true);
-              }}
+      {commonTimeslots.length > 1 ? (
+        <Accordion type="single" collapsible className="w-full">
+          {commonTimeslots.map((commonDateTimeslot) => (
+            <AccordionItem
+              key={commonDateTimeslot}
+              value={commonDateTimeslot}
+              className="outline-no-bottom last:border-b-2 border-gray-200 pt-2"
             >
-              Book this slot
-            </Button>
-          </div>
-          <AccordionContent className="px-4 py-2">
-            <div className="flex justify-between items-center">
-              <span>
-                Future improvement: attendees available for this slot
-              </span>
-            </div>
-          </AccordionContent>
-        </AccordionItem>
-      ))}
-    </Accordion>
-    : <div> There are no common timeslots yet :( </div>
-}
+              <div className="flex justify-between items-center w-full">
+                <AccordionTrigger className="flex-grow w-full px-4 py-4 [&>svg]:order-1 [&>svg]:mr-auto [&>svg]:ml-2">
+                  <div className="text-lg font-semibold flex items-center justify-between w-full">
+                    <div className="flex items-center">
+                      {/* Date section */}
+                      <div className="flex items-center gap-2 min-w-[300px]">
+                        <Calendar className="h-5 w-5 flex-shrink-0 text-slate-400" />
+                        <span>{formatDate(commonDateTimeslot)}</span>
+                      </div>
+
+                      {/* Time section */}
+                      <div className="flex items-center gap-2 ml-4">
+                        <Clock className="h-5 w-5 flex-shrink-0 text-slate-400" />
+                        <span>{commonDateTimeslot.slice(11, 16)}</span>
+                      </div>
+                    </div>
+                  </div>
+                </AccordionTrigger>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="text-indigo-600 mr-5"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSelectedTimeslot(commonDateTimeslot);
+                    setIsDialogOpen(true);
+                  }}
+                >
+                  Book this slot
+                </Button>
+              </div>
+              <AccordionContent className="px-4 py-2">
+                <div className="flex justify-between items-center">
+                  <span>
+                    Future improvement: attendees available for this slot
+                  </span>
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+          ))}
+        </Accordion>
+      ) : (
+        <div> There are no common timeslots yet :( </div>
+      )}
       <ConfirmationModal
         isOpen={isDialogOpen}
         onOpenChange={setIsDialogOpen}

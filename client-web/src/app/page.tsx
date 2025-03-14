@@ -85,7 +85,7 @@ export default function Home() {
                           className={cn([
                             "mr-8 h-6 rounded-sm text-xs ",
                             "bg-slate-500 text-white",
-                            event.status === "SCHEDULED" && "bg-indigo-200 text-indigo-600"
+                            event.status === "SCHEDULED" && "bg-indigo-200 text-indigo-600 border border-indigo-600"
                           ])}
                         >
                           {EVENT_STATUS[event.status]}

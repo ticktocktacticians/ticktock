@@ -13,6 +13,7 @@ import { Badge } from "../components/ui/badge";
 import { EVENT_STATUS } from "../lib/apis/getEventsAndBookings";
 import { Calendar, Clock, Hourglass, MapPin, PlusCircle } from "lucide-react";
 import { formatTime } from "../utils/date";
+import { useSidebar } from "../components/ui/sidebar";
 
 const FORMAT_DISPLAY = {
   VIRTUAL: "Virtual",
@@ -27,6 +28,7 @@ export default function Home() {
   const { data: user } = useGetUser();
 
   const { events, bookings } = useGetEventsAndBookings().data ?? {};
+  const { isMobile } = useSidebar();
 
   if (!user) {
     return (
@@ -40,7 +42,7 @@ export default function Home() {
   }
 
   return (
-    <div className="flex flex-col place-self-center w-[720px] overflow-y-hidden">
+    <div className="flex flex-col place-self-center sm:w-[720px] w-[360px] overflow-y-hidden">
       <h1 className="text-2xl font-semibold mb-5 text-slate-400">
         Hi, {user.email}!
       </h1>
@@ -56,45 +58,62 @@ export default function Home() {
           events
             .sort((e1, e2) => e1.id - e2.id)
             .map((event) => {
-              const bookingDatetime = bookings?.find((b) => b.timeslot?.eventID === event.id)?.timeslot?.startDateTime;
-              const parsedDatetime = bookingDatetime ? new Date(bookingDatetime) : null;
-              const date = parsedDatetime?.toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' });
+              const bookingDatetime = bookings?.find(
+                (b) => b.timeslot?.eventID === event.id
+              )?.timeslot?.startDateTime;
+              const parsedDatetime = bookingDatetime
+                ? new Date(bookingDatetime)
+                : null;
+              const date = parsedDatetime?.toLocaleDateString("en-GB", {
+                day: "2-digit",
+                month: "long",
+                year: "numeric",
+              });
               const time = parsedDatetime && formatTime(parsedDatetime);
               return (
                 <Card
-                  className="flex h-18 items-center justify-between px-6 py-4 rounded-none"
+                  className="flex h-18 items-center justify-between sm:px-6 px-3 py-4 rounded-none"
                   key={event.id}
                 >
-                  <h2>{event.title ? truncate(event.title) : "-"}</h2>
+                  <h2>
+                    {event.title ? truncate(event.title) : "-"}
+                  </h2>
                   <div className="flex items-center">
-                    <Badge variant="secondary" className="mr-4 h-6 rounded-sm">
-                      {EVENT_STATUS[event.status]}
-                    </Badge>
-                    <div className="flex gap-2 mr-5">
-                      <div className="flex flex-col gap-2 w-28">
-                        <span className="flex text-xs">
-                          <Calendar height="16px" />
-                          {date ? date : "-"}
-                        </span>
-                        <span className="flex text-xs">
-                          <Clock height="16px" />
-                          {time ? time : "-"}
-                        </span>
-                      </div>
-                      <div className="flex flex-col gap-2 w-16">
-                        <span className="flex text-xs">
-                          <Hourglass height="16px" />
-                          {event.duration} min
-                        </span>
-                        <span className="flex text-xs">
-                          <MapPin height="16px" />
-                          {FORMAT_DISPLAY[event.format]}
-                        </span>
-                      </div>
-                    </div>
+                    {!isMobile && (
+                      <>
+                        <Badge
+                          variant="secondary"
+                          className="mr-4 h-6 rounded-sm text-xs sm:text-sm"
+                        >
+                          {EVENT_STATUS[event.status]}
+                        </Badge>
+                        <div className="flex gap-2 mr-5">
+                          <div className="flex flex-col gap-2 w-28">
+                            <span className="flex text-xs">
+                              <Calendar height="16px" />
+                              {date ? date : "-"}
+                            </span>
+                            <span className="flex text-xs">
+                              <Clock height="16px" />
+                              {time ? time : "-"}
+                            </span>
+                          </div>
+                          <div className="flex flex-col gap-2 w-16">
+                            <span className="flex text-xs">
+                              <Hourglass height="16px" />
+                              {event.duration} min
+                            </span>
+                            <span className="flex text-xs">
+                              <MapPin height="16px" />
+                              {FORMAT_DISPLAY[event.format]}
+                            </span>
+                          </div>
+                        </div>
+                      </>
+                    )}
                     <Button
                       onClick={() => redirect(`/meeting/${event.id}`)}
-                      className="bg-indigo-600 text-xs"
+                      className="bg-indigo-600 text-xs sm:w-fit w-20"
                     >
                       View Details
                     </Button>
